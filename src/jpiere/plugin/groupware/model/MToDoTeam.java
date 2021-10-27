@@ -669,5 +669,68 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 	}
 
 
+	@Override
+	public void setC_ContactActivity_ID(int C_ContactActivity_ID) {
+		return;
+	}
+
+
+	@Override
+	public int getC_ContactActivity_ID() {
+		return 0;
+	}
+
+
+	@Override
+	public void setC_BPartner_ID(int C_BPartner_ID) {
+		return;
+	}
+
+
+	@Override
+	public int getC_BPartner_ID() {
+		return 0;
+	}
+
+
+
+
+	@Override
+	public void setPercent(BigDecimal Percent) {
+		
+		
+	}
+
+
+	@Override
+	public BigDecimal getPercent() {
+		
+		return null;
+	}
+
+
+	@Override
+	public void setPriority(String Priority) {
+		
+		
+	}
+
+	@Override
+	public String getPriority() {
+		
+		return null;
+	}
+
+	@Override
+	public void setS_ResourceAssignment_ID(int S_ResourceAssignment_ID) {
+		
+		
+	}
+
+	@Override
+	public int getS_ResourceAssignment_ID() {
+		
+		return 0;
+	}
 
 }

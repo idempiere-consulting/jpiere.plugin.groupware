@@ -27,14 +27,14 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Model for JP_ToDo
  *  @author iDempiere (generated) 
- *  @version Release 7.1 - $Id$ */
+ *  @version Release 8.2 - $Id$ */
 public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent 
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20201108L;
+	private static final long serialVersionUID = 20211027L;
 
     /** Standard Constructor */
     public X_JP_ToDo (Properties ctx, int JP_ToDo_ID, String trxName)
@@ -83,8 +83,8 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 
     public String toString()
     {
-      StringBuffer sb = new StringBuffer ("X_JP_ToDo[")
-        .append(get_ID()).append("]");
+      StringBuilder sb = new StringBuilder ("X_JP_ToDo[")
+        .append(get_ID()).append(",Name=").append(getName()).append("]");
       return sb.toString();
     }
 
@@ -144,6 +144,107 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_BPartner)MTable.get(getCtx(), org.compiere.model.I_C_BPartner.Table_Name)
+			.getPO(getC_BPartner_ID(), get_TrxName());	}
+
+	/** Set Business Partner .
+		@param C_BPartner_ID 
+		Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID)
+	{
+		if (C_BPartner_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+	}
+
+	/** Get Business Partner .
+		@return Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public org.compiere.model.I_C_ContactActivity getC_ContactActivity() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_ContactActivity)MTable.get(getCtx(), org.compiere.model.I_C_ContactActivity.Table_Name)
+			.getPO(getC_ContactActivity_ID(), get_TrxName());	}
+
+	/** Set Contact Activity.
+		@param C_ContactActivity_ID 
+		Events, tasks, communications related to a contact
+	  */
+	public void setC_ContactActivity_ID (int C_ContactActivity_ID)
+	{
+		if (C_ContactActivity_ID < 1) 
+			set_Value (COLUMNNAME_C_ContactActivity_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_ContactActivity_ID, Integer.valueOf(C_ContactActivity_ID));
+	}
+
+	/** Get Contact Activity.
+		@return Events, tasks, communications related to a contact
+	  */
+	public int getC_ContactActivity_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ContactActivity_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Comments.
+		@param Comments 
+		Comments or additional information
+	  */
+	public void setComments (String Comments)
+	{
+		set_Value (COLUMNNAME_Comments, Comments);
+	}
+
+	/** Get Comments.
+		@return Comments or additional information
+	  */
+	public String getComments () 
+	{
+		return (String)get_Value(COLUMNNAME_Comments);
+	}
+
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
+    {
+		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
+			.getPO(getC_Project_ID(), get_TrxName());	}
+
+	/** Set Project.
+		@param C_Project_ID 
+		Financial Project
+	  */
+	public void setC_Project_ID (int C_Project_ID)
+	{
+		if (C_Project_ID < 1) 
+			set_Value (COLUMNNAME_C_Project_ID, null);
+		else 
+			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
+	}
+
+	/** Get Project.
+		@return Financial Project
+	  */
+	public int getC_Project_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
     {
 		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_Name)
@@ -198,51 +299,6 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException
-    {
-		return (org.compiere.model.I_C_Project)MTable.get(getCtx(), org.compiere.model.I_C_Project.Table_Name)
-			.getPO(getC_Project_ID(), get_TrxName());	}
-
-	/** Set Project.
-		@param C_Project_ID 
-		Financial Project
-	  */
-	public void setC_Project_ID (int C_Project_ID)
-	{
-		if (C_Project_ID < 1) 
-			set_Value (COLUMNNAME_C_Project_ID, null);
-		else 
-			set_Value (COLUMNNAME_C_Project_ID, Integer.valueOf(C_Project_ID));
-	}
-
-	/** Get Project.
-		@return Financial Project
-	  */
-	public int getC_Project_ID () 
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_Project_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set Comments.
-		@param Comments 
-		Comments or additional information
-	  */
-	public void setComments (String Comments)
-	{
-		set_Value (COLUMNNAME_Comments, Comments);
-	}
-
-	/** Get Comments.
-		@return Comments or additional information
-	  */
-	public String getComments () 
-	{
-		return (String)get_Value(COLUMNNAME_Comments);
 	}
 
 	/** Set Description.
@@ -397,10 +453,10 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 
 	/** JP_Statistics_YesNo AD_Reference_ID=319 */
 	public static final int JP_STATISTICS_YESNO_AD_Reference_ID=319;
-	/** Yes = Y */
-	public static final String JP_STATISTICS_YESNO_Yes = "Y";
 	/** No = N */
 	public static final String JP_STATISTICS_YESNO_No = "N";
+	/** Yes = Y */
+	public static final String JP_STATISTICS_YESNO_Yes = "Y";
 	/** Set Yes / No.
 		@param JP_Statistics_YesNo Yes / No	  */
 	public void setJP_Statistics_YesNo (String JP_Statistics_YesNo)
@@ -570,12 +626,12 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		return (Timestamp)get_Value(COLUMNNAME_JP_ToDo_StartTime);
 	}
 
+	/** Completed = CO */
+	public static final String JP_TODO_STATUS_Completed = "CO";
 	/** Not yet started = NY */
 	public static final String JP_TODO_STATUS_NotYetStarted = "NY";
 	/** Work in progress = WP */
 	public static final String JP_TODO_STATUS_WorkInProgress = "WP";
-	/** Completed = CO */
-	public static final String JP_TODO_STATUS_Completed = "CO";
 	/** Set ToDo Status.
 		@param JP_ToDo_Status ToDo Status	  */
 	public void setJP_ToDo_Status (String JP_ToDo_Status)
@@ -616,12 +672,12 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		return ii.intValue();
 	}
 
-	/** Task = T */
-	public static final String JP_TODO_TYPE_Task = "T";
-	/** Schedule = S */
-	public static final String JP_TODO_TYPE_Schedule = "S";
 	/** Memo = M */
 	public static final String JP_TODO_TYPE_Memo = "M";
+	/** Schedule = S */
+	public static final String JP_TODO_TYPE_Schedule = "S";
+	/** Task = T */
+	public static final String JP_TODO_TYPE_Task = "T";
 	/** Set ToDo Type.
 		@param JP_ToDo_Type ToDo Type	  */
 	public void setJP_ToDo_Type (String JP_ToDo_Type)
@@ -676,6 +732,56 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
         return new KeyNamePair(get_ID(), getName());
     }
 
+	/** Set Percent.
+		@param Percent 
+		Percentage
+	  */
+	public void setPercent (BigDecimal Percent)
+	{
+		set_Value (COLUMNNAME_Percent, Percent);
+	}
+
+	/** Get Percent.
+		@return Percentage
+	  */
+	public BigDecimal getPercent () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Percent);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Priority AD_Reference_ID=154 */
+	public static final int PRIORITY_AD_Reference_ID=154;
+	/** Urgent = 1 */
+	public static final String PRIORITY_Urgent = "1";
+	/** High = 3 */
+	public static final String PRIORITY_High = "3";
+	/** Medium = 5 */
+	public static final String PRIORITY_Medium = "5";
+	/** Low = 7 */
+	public static final String PRIORITY_Low = "7";
+	/** Minor = 9 */
+	public static final String PRIORITY_Minor = "9";
+	/** Set Priority.
+		@param Priority 
+		Indicates if this request is of a high, medium or low priority.
+	  */
+	public void setPriority (String Priority)
+	{
+
+		set_Value (COLUMNNAME_Priority, Priority);
+	}
+
+	/** Get Priority.
+		@return Indicates if this request is of a high, medium or low priority.
+	  */
+	public String getPriority () 
+	{
+		return (String)get_Value(COLUMNNAME_Priority);
+	}
+
 	/** Set Processed.
 		@param Processed 
 		The document has been processed
@@ -718,6 +824,29 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public int getRecord_ID () 
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_Record_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	/** Set Resource Assignment.
+		@param S_ResourceAssignment_ID 
+		Resource Assignment
+	  */
+	public void setS_ResourceAssignment_ID (int S_ResourceAssignment_ID)
+	{
+		if (S_ResourceAssignment_ID < 1) 
+			set_ValueNoCheck (COLUMNNAME_S_ResourceAssignment_ID, null);
+		else 
+			set_ValueNoCheck (COLUMNNAME_S_ResourceAssignment_ID, Integer.valueOf(S_ResourceAssignment_ID));
+	}
+
+	/** Get Resource Assignment.
+		@return Resource Assignment
+	  */
+	public int getS_ResourceAssignment_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_S_ResourceAssignment_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();

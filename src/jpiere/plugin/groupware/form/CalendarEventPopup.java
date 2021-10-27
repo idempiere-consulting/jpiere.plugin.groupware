@@ -98,6 +98,10 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Label.put(MToDo.COLUMNNAME_AD_Org_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_AD_Org_ID)) );
 		map_Label.put(MToDo.COLUMNNAME_AD_User_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_AD_User_ID)) );
 		map_Label.get(MToDo.COLUMNNAME_AD_User_ID).setStyle("font-weight:bold;border-left: 4px solid #F39700;padding-left:2px;");
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Label.put(MToDo.COLUMNNAME_C_ContactActivity_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID)) );
+		map_Label.put(MToDo.COLUMNNAME_C_BPartner_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID)) );
+		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Type, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Type)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Category_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Category_ID)) );
 		map_Label.put(MToDo.COLUMNNAME_Name, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Name)) );
@@ -134,7 +138,20 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		WSearchEditor Editor_AD_User_ID = new WSearchEditor(lookup_AD_User_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_AD_User_ID), null, true, true, false);
 		ZKUpdateUtil.setHflex(Editor_AD_User_ID.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_AD_User_ID, Editor_AD_User_ID);
-
+		
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** C_ContactActivity_ID ***//
+		MLookup lookup_C_ContactActivity_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_ContactActivity_ID),  DisplayType.Search);
+		WSearchEditor Editor_C_ContactActivity_ID = new WSearchEditor(lookup_C_ContactActivity_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID), null, false, true, true);
+		ZKUpdateUtil.setHflex(Editor_C_ContactActivity_ID.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_C_ContactActivity_ID, Editor_C_ContactActivity_ID);
+		
+		//*** C_ContactActivity_ID ***//
+		MLookup lookup_C_BPartner_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_BPartner_ID),  DisplayType.Search);
+		WSearchEditor Editor_C_BPartner_ID = new WSearchEditor(lookup_C_BPartner_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID), null, false, true, true);
+		ZKUpdateUtil.setHflex(Editor_C_BPartner_ID.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_C_BPartner_ID, Editor_C_BPartner_ID);
+		//iDempiereConsulting __26/10/2021 --------- END
 
 		//*** JP_ToDo_Type ***//
 		MLookup lookup_JP_ToDo_Type = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name,  MToDo.COLUMNNAME_JP_ToDo_Type),  DisplayType.List);
@@ -419,6 +436,21 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_AD_User_ID), true),2);
 		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).getComponent(),4);
 
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** C_ContactActivity_ID ***//
+		row = rows.newRow();
+		rows.appendChild(row);
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_ContactActivity_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).getComponent(),4);
+		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).showMenu();
+		
+		//*** C_BPartner_ID ***//
+		row = rows.newRow();
+		rows.appendChild(row);
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_BPartner_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).getComponent(),4);
+		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).showMenu();
+		//iDempiereConsulting __26/10/2021 --------END
 
 		//*** JP_ToDo_Type ***//
 		row = rows.newRow();
@@ -657,6 +689,10 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 
 		map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(p_I_ToDo.getAD_Org_ID());
 		map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_I_ToDo.getAD_User_ID());
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_I_ToDo.getC_ContactActivity_ID()==0? null : p_I_ToDo.getC_ContactActivity_ID());
+		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_I_ToDo.getC_BPartner_ID()==0? null : p_I_ToDo.getC_BPartner_ID());
+		//iDempiereConsulting __26/10/2021 -------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue(p_I_ToDo.getJP_ToDo_Type());
 		if(p_I_ToDo.getJP_ToDo_Category_ID() > 0)
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Category_ID).setValue(p_I_ToDo.getJP_ToDo_Category_ID());

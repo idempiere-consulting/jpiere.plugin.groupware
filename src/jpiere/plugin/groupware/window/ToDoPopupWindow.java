@@ -70,6 +70,7 @@ import org.compiere.model.MProcess;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_ContactActivity;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
 import org.compiere.util.DisplayType;
@@ -144,6 +145,14 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 	private int p_Add_Hours = 5;
 	private int p_Add_Mins = 15;
+	
+	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+	private int p_c_contactActivity_ID = 0;
+	private int p_c_bpartner_ID = 0;
+	private static final BigDecimal NY_STATUS_PERCENT = BigDecimal.ZERO; //percent for 'Not yet started'
+	private static final BigDecimal WP_STATUS_PERCENT = new BigDecimal(50); //percent for 'Work in progress'
+	private static final BigDecimal CO_STATUS_PERCENT = new BigDecimal(100); //percent for 'Completed'
+	//iDempiereConsulting __26/10/2021 -------END 
 
 	private I_ToDoPopupwindowCaller i_PersonalToDoPopupwindowCaller;
 
@@ -416,6 +425,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Label.put(MToDo.COLUMNNAME_AD_Org_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_AD_Org_ID)) );
 		map_Label.put(MToDo.COLUMNNAME_AD_User_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_AD_User_ID)) );
 		map_Label.get(MToDo.COLUMNNAME_AD_User_ID).setStyle("font-weight:bold;border-left: 4px solid #F39700;padding-left:2px;");
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Label.put(MToDo.COLUMNNAME_C_ContactActivity_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID)) );
+		map_Label.put(MToDo.COLUMNNAME_C_BPartner_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID)) );
+		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Type, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Type)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Category_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Category_ID)) );
 		map_Label.put(MToDo.COLUMNNAME_Name, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Name)) );
@@ -458,7 +471,22 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		Editor_AD_User_ID.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(Editor_AD_User_ID.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_AD_User_ID, Editor_AD_User_ID);
-
+		
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** C_ContactActivity_ID ***//
+		MLookup lookup_C_ContactActivity_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_ContactActivity_ID),  DisplayType.Search);
+		WSearchEditor Editor_C_ContactActivity_ID = new WSearchEditor(lookup_C_ContactActivity_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID), null, true, p_IsNewRecord? false : true, true);
+		Editor_C_ContactActivity_ID.addValueChangeListener(this);
+		ZKUpdateUtil.setHflex(Editor_C_ContactActivity_ID.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_C_ContactActivity_ID, Editor_C_ContactActivity_ID);
+		
+		//*** C_BPartner_ID ***//
+		MLookup lookup_C_BPartner_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_BPartner_ID),  DisplayType.Search);
+		WSearchEditor Editor_C_BPartner_ID = new WSearchEditor(lookup_C_BPartner_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID), null, true, p_IsNewRecord? false : true, true);
+		Editor_C_BPartner_ID.addValueChangeListener(this);
+		ZKUpdateUtil.setHflex(Editor_C_BPartner_ID.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_C_BPartner_ID, Editor_C_BPartner_ID);
+		//iDempiereConsulting __26/10/2021 --------- END 
 
 		//*** JP_ToDo_Type ***//
 		MLookup lookup_JP_ToDo_Type = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name,  MToDo.COLUMNNAME_JP_ToDo_Type),  DisplayType.List);
@@ -638,6 +666,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		else
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		//iDempiereConsulting __26/10/2021 ------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Category_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_Name).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_Description).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
@@ -680,6 +712,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		{
 			map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(0);
 			map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_AD_User_ID);
+			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_c_contactActivity_ID==0? null : p_c_contactActivity_ID);
+			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_c_bpartner_ID==0? null : p_c_bpartner_ID);
+			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue(p_JP_ToDo_Type);
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Category_ID).setValue(p_JP_ToDo_Category_ID==0? null : p_JP_ToDo_Category_ID);
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartDate).setValue(p_InitialScheduledStartTime);
@@ -695,6 +731,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 			map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(p_iToDo.getAD_Org_ID());
 			map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_AD_User_ID);
+			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_iToDo.getC_ContactActivity_ID()==0? null : p_iToDo.getC_ContactActivity_ID());
+			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_iToDo.getC_BPartner_ID()==0? null : p_iToDo.getC_BPartner_ID());
+			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue(p_iToDo.getJP_ToDo_Type());
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Category_ID).setValue(p_iToDo.getJP_ToDo_Category_ID() == 0? null : p_iToDo.getJP_ToDo_Category_ID());
 			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(p_iToDo.getName());
@@ -1081,7 +1121,22 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_AD_User_ID), true),2);
 		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).getComponent(),4);
 
-
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** C_ContactActivity_ID ***//
+		row = rows.newRow();
+		rows.appendChild(row);
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_ContactActivity_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).getComponent(),4);
+		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).showMenu();
+		
+		//*** C_BPartner_ID ***//
+		row = rows.newRow();
+		rows.appendChild(row);
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_BPartner_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).getComponent(),4);
+		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).showMenu();
+		//iDempiereConsulting __26/10/2021 --------END
+		
 		//*** JP_ToDo_Type ***//
 		row = rows.newRow();
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_Type), true),2);
@@ -1131,7 +1186,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 
 		//*** JP_ToDo_ScheduledStartDate & Time ***//
-		if(MToDo.JP_TODO_TYPE_Schedule.equals(p_JP_ToDo_Type))
+		if(MToDo.JP_TODO_TYPE_Schedule.equals(p_JP_ToDo_Type) )
 		{
 			row = rows.newRow();
 			row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartDate), true),2);
@@ -1717,7 +1772,13 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_iToDo.setProcessed(db_ToDo.isProcessed());
 				p_iToDo.setUpdated(db_ToDo.getUpdated());
 				p_iToDo.setIsActive(db_ToDo.isActive());
-
+				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+				p_iToDo.setC_ContactActivity_ID (db_ToDo.getC_ContactActivity_ID());
+				p_iToDo.setC_BPartner_ID (db_ToDo.getC_BPartner_ID ());
+				p_iToDo.setPercent (db_ToDo.getPercent());
+				p_iToDo.setPriority (db_ToDo.getPriority());
+				p_iToDo.setS_ResourceAssignment_ID (db_ToDo.getS_ResourceAssignment_ID());
+				//iDempiereConsulting __26/10/2021 -------END
 				if(p_iToDo.get_TableName().equals(MToDo.Table_Name))
 				{
 					p_iToDo.setComments(db_ToDo.getComments());
@@ -2066,7 +2127,39 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 			valueChangeFieldMap.put(MToDoTeam.COLUMNNAME_JP_Mandatory_Statistics_Info, p_iToDo.is_ValueChanged(MToDoTeam.COLUMNNAME_JP_Mandatory_Statistics_Info));
 		}
-
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//Check C_ContactActivity_ID
+		editor = map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID);
+		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+		{
+			;
+		}else {
+			p_iToDo.setC_ContactActivity_ID ((Integer)editor.getValue());
+		}
+		valueChangeFieldMap.put(MToDo.COLUMNNAME_C_ContactActivity_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_C_ContactActivity_ID));
+			
+		//Check C_BPartner_ID
+		editor = map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID);
+		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+		{
+			;
+		}else {
+			p_iToDo.setC_BPartner_ID ((Integer)editor.getValue());
+		}
+		valueChangeFieldMap.put(MToDo.COLUMNNAME_C_BPartner_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_C_BPartner_ID));
+		
+		if(p_iToDo.getC_ContactActivity_ID()>0) {
+		
+			X_C_ContactActivity cTask = new X_C_ContactActivity(ctx, p_iToDo.getC_ContactActivity_ID(), null);
+			
+			if(p_iToDo.getJP_ToDo_Status().equals(MToDo.JP_TODO_STATUS_Completed))
+				p_iToDo.setPercent(CO_STATUS_PERCENT);
+			else if(p_iToDo.getJP_ToDo_Status().equals(MToDo.JP_TODO_STATUS_WorkInProgress))
+				p_iToDo.setPercent(WP_STATUS_PERCENT);
+			else if(p_iToDo.getJP_ToDo_Status().equals(MToDo.JP_TODO_STATUS_NotYetStarted))
+				p_iToDo.setPercent(NY_STATUS_PERCENT);			
+		}
+		//iDempiereConsulting __26/10/2021 ------END
 
 		//Check only update ToDo Status
 		if(isOnlyUpdateToDoStatus)
@@ -2797,6 +2890,21 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_URL).setValue(value.toString());
 
 		}
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		else if(MToDo.COLUMNNAME_C_ContactActivity_ID.equals(name)) {
+			int contactActivity_ID = (Integer)value;
+			X_C_ContactActivity cTask = new X_C_ContactActivity(ctx, contactActivity_ID, null);
+			String strNAME = "";
+			if(cTask.get_ValueAsString("DocumentNo")!=null && !cTask.get_ValueAsString("DocumentNo").isEmpty())
+				strNAME = cTask.get_ValueAsString("DocumentNo");
+			if(cTask.get_ValueAsString("Name")!=null && !cTask.get_ValueAsString("Name").isEmpty())
+				strNAME = ((!strNAME.isEmpty())?"-":"").concat(cTask.get_ValueAsString("Name"));
+			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
+			map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cTask.getDescription());
+			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cTask.get_ValueAsInt("C_BPartner_ID"));
+			
+		}
+		//iDempiereConsulting __26/10/2021 -------END
 
 		p_IsDirty = true;
 		updateNorth();

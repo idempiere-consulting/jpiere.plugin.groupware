@@ -212,5 +212,46 @@ public interface I_ToDo
 	/** URL **/
 	public void setURL (String URL);
 	public String getURL();
+	
+	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+	/** C_ContactActivity_ID **/
+	public void setC_ContactActivity_ID (int C_ContactActivity_ID);
+	public int getC_ContactActivity_ID ();
+	
+	/** C_BPartner_ID **/
+	public void setC_BPartner_ID (int C_BPartner_ID);
+	public int getC_BPartner_ID ();
+	
+	/** Set Percent.
+	  * Percentage
+	  */
+	public void setPercent (BigDecimal Percent);
+
+	/** Get Percent.
+	  * Percentage
+	  */
+	public BigDecimal getPercent();
+
+	/** Set Priority.
+	  * Indicates if this request is of a high, medium or low priority.
+	  */
+	public void setPriority (String Priority);
+
+	/** Get Priority.
+	  * Indicates if this request is of a high, medium or low priority.
+	  */
+	public String getPriority();
+	
+	/** Set Resource Assignment.
+	  * Resource Assignment
+	  */
+	public void setS_ResourceAssignment_ID (int S_ResourceAssignment_ID);
+
+	/** Get Resource Assignment.
+	  * Resource Assignment
+	  */
+	public int getS_ResourceAssignment_ID();
+
+	//iDempiereConsulting __26/10/2021 -------END
 
 }

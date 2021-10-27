@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for JP_ToDo
  *  @author iDempiere (generated) 
- *  @version Release 7.1
+ *  @version Release 8.2
  */
 @SuppressWarnings("all")
 public interface I_JP_ToDo 
@@ -32,7 +32,7 @@ public interface I_JP_ToDo
     /** TableName=JP_ToDo */
     public static final String Table_Name = "JP_ToDo";
 
-    /** AD_Table_ID=1000256 */
+    /** AD_Table_ID=1000273 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -94,6 +94,64 @@ public interface I_JP_ToDo
 
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException;
 
+    /** Column name C_BPartner_ID */
+    public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
+
+	/** Set Business Partner .
+	  * Identifies a Business Partner
+	  */
+	public void setC_BPartner_ID (int C_BPartner_ID);
+
+	/** Get Business Partner .
+	  * Identifies a Business Partner
+	  */
+	public int getC_BPartner_ID();
+
+	public org.compiere.model.I_C_BPartner getC_BPartner() throws RuntimeException;
+
+    /** Column name C_ContactActivity_ID */
+    public static final String COLUMNNAME_C_ContactActivity_ID = "C_ContactActivity_ID";
+
+	/** Set Contact Activity.
+	  * Events, tasks, communications related to a contact
+	  */
+	public void setC_ContactActivity_ID (int C_ContactActivity_ID);
+
+	/** Get Contact Activity.
+	  * Events, tasks, communications related to a contact
+	  */
+	public int getC_ContactActivity_ID();
+
+	public org.compiere.model.I_C_ContactActivity getC_ContactActivity() throws RuntimeException;
+
+    /** Column name Comments */
+    public static final String COLUMNNAME_Comments = "Comments";
+
+	/** Set Comments.
+	  * Comments or additional information
+	  */
+	public void setComments (String Comments);
+
+	/** Get Comments.
+	  * Comments or additional information
+	  */
+	public String getComments();
+
+    /** Column name C_Project_ID */
+    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
+
+	/** Set Project.
+	  * Financial Project
+	  */
+	public void setC_Project_ID (int C_Project_ID);
+
+	/** Get Project.
+	  * Financial Project
+	  */
+	public int getC_Project_ID();
+
+	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
+
     /** Column name C_ProjectPhase_ID */
     public static final String COLUMNNAME_C_ProjectPhase_ID = "C_ProjectPhase_ID";
 
@@ -123,34 +181,6 @@ public interface I_JP_ToDo
 	public int getC_ProjectTask_ID();
 
 	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException;
-
-    /** Column name C_Project_ID */
-    public static final String COLUMNNAME_C_Project_ID = "C_Project_ID";
-
-	/** Set Project.
-	  * Financial Project
-	  */
-	public void setC_Project_ID (int C_Project_ID);
-
-	/** Get Project.
-	  * Financial Project
-	  */
-	public int getC_Project_ID();
-
-	public org.compiere.model.I_C_Project getC_Project() throws RuntimeException;
-
-    /** Column name Comments */
-    public static final String COLUMNNAME_Comments = "Comments";
-
-	/** Set Comments.
-	  * Comments or additional information
-	  */
-	public void setComments (String Comments);
-
-	/** Get Comments.
-	  * Comments or additional information
-	  */
-	public String getComments();
 
     /** Column name Created */
     public static final String COLUMNNAME_Created = "Created";
@@ -402,6 +432,32 @@ public interface I_JP_ToDo
 	  */
 	public String getName();
 
+    /** Column name Percent */
+    public static final String COLUMNNAME_Percent = "Percent";
+
+	/** Set Percent.
+	  * Percentage
+	  */
+	public void setPercent (BigDecimal Percent);
+
+	/** Get Percent.
+	  * Percentage
+	  */
+	public BigDecimal getPercent();
+
+    /** Column name Priority */
+    public static final String COLUMNNAME_Priority = "Priority";
+
+	/** Set Priority.
+	  * Indicates if this request is of a high, medium or low priority.
+	  */
+	public void setPriority (String Priority);
+
+	/** Get Priority.
+	  * Indicates if this request is of a high, medium or low priority.
+	  */
+	public String getPriority();
+
     /** Column name Processed */
     public static final String COLUMNNAME_Processed = "Processed";
 
@@ -428,18 +484,18 @@ public interface I_JP_ToDo
 	  */
 	public int getRecord_ID();
 
-    /** Column name URL */
-    public static final String COLUMNNAME_URL = "URL";
+    /** Column name S_ResourceAssignment_ID */
+    public static final String COLUMNNAME_S_ResourceAssignment_ID = "S_ResourceAssignment_ID";
 
-	/** Set URL.
-	  * Full URL address - e.g. http://www.idempiere.org
+	/** Set Resource Assignment.
+	  * Resource Assignment
 	  */
-	public void setURL (String URL);
+	public void setS_ResourceAssignment_ID (int S_ResourceAssignment_ID);
 
-	/** Get URL.
-	  * Full URL address - e.g. http://www.idempiere.org
+	/** Get Resource Assignment.
+	  * Resource Assignment
 	  */
-	public String getURL();
+	public int getS_ResourceAssignment_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";
@@ -456,4 +512,17 @@ public interface I_JP_ToDo
 	  * User who updated this records
 	  */
 	public int getUpdatedBy();
+
+    /** Column name URL */
+    public static final String COLUMNNAME_URL = "URL";
+
+	/** Set URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public void setURL (String URL);
+
+	/** Get URL.
+	  * Full URL address - e.g. http://www.idempiere.org
+	  */
+	public String getURL();
 }

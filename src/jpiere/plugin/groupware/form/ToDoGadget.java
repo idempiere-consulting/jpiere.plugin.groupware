@@ -126,7 +126,7 @@ public class ToDoGadget extends DashboardPanel implements I_ToDoCalendarGadget, 
 	{
 		super();
 		p_GroupwareUser = MGroupwareUser.get(ctx, Env.getAD_User_ID(ctx));
-		if(p_GroupwareUser != null)
+		if(p_GroupwareUser.getJP_GroupwareUser_ID()>0)
 		{
 			if(!Util.isEmpty(p_GroupwareUser.getJP_ToDo_Type()))
 				init(p_GroupwareUser.getJP_ToDo_Type(), p_GroupwareUser.getJP_ToDo_Calendar(),  true);

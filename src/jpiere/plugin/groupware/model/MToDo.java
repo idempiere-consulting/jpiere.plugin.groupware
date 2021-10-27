@@ -13,7 +13,9 @@
  *****************************************************************************/
 package jpiere.plugin.groupware.model;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +25,10 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.MMessage;
+import org.compiere.model.MResourceAssignment;
 import org.compiere.model.Query;
+import org.compiere.model.X_C_ContactActivity;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
@@ -277,6 +282,8 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			if(MToDo.JP_TODO_STATUS_Completed.equals(getJP_ToDo_Status()))
 			{
 				processedReminders();
+				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+				createResourceAssignment();
 
 			}else if(MToDo.JP_TODO_STATUS_Completed.equals(get_ValueOld(MToDo.COLUMNNAME_JP_ToDo_Status))){
 
@@ -304,6 +311,10 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			}
 
 		}
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		if(success && newRecord && MToDo.JP_TODO_STATUS_Completed.equals(getJP_ToDo_Status()))
+			createResourceAssignment();
+
 
 		return true;
 
@@ -508,7 +519,37 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 
 		return list_ToDo;
 	}
-
+	
+	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+	private void createResourceAssignment() {
+		MResourceAssignment resAssignment = new MResourceAssignment(getCtx(), 0, null);
+		X_C_ContactActivity cTask = new X_C_ContactActivity(getCtx(), getC_ContactActivity_ID(), null);
+		
+		resAssignment.set_ValueOfColumn("JP_ToDo_ID", getJP_ToDo_ID());
+		resAssignment.setAD_Org_ID(cTask.getAD_Org_ID());
+		resAssignment.set_ValueOfColumn("C_ContactActivity_ID",cTask.getC_ContactActivity_ID());
+		resAssignment.setAssignDateFrom(getJP_ToDo_ScheduledStartTime());
+		//resAssignment.setQty((p_qty==null)?BigDecimal.ZERO:p_qty);
+		resAssignment.setAssignDateTo(getJP_ToDo_ScheduledEndTime());
+		resAssignment.setName(getName());
+		resAssignment.setDescription(getDescription());
+		int resourceID = DB.getSQLValue(null, "SELECT S_Resource_ID FROM S_Resource WHERE isActive='Y' AND AD_Client_ID=? AND AD_User_ID=?", cTask.getAD_Client_ID(),getAD_User_ID());
+		resAssignment.setS_Resource_ID(resourceID);
+		resAssignment.set_ValueOfColumn("M_Product_ID",cTask.get_ValueAsInt("M_Product_ID"));
+		if(cTask.get_ValueAsInt("C_BPartner_ID")>0)
+			resAssignment.set_ValueOfColumn("C_BPartner_ID", cTask.get_ValueAsInt("C_BPartner_ID"));
+		resAssignment.set_ValueOfColumn("isDoNotInvoice", cTask.get_ValueAsBoolean("isDoNotInvoice"));
+		resAssignment.set_ValueOfColumn("Percent", new BigDecimal(100));
+		resAssignment.set_ValueOfColumn("PlannedQty", BigDecimal.ZERO);
+		resAssignment.set_ValueOfColumn("C_Project_ID",cTask.get_ValueAsInt("C_Project_ID"));
+		//resAssignment.set_ValueOfColumn("Priority",p_priority); TODO 
+		resAssignment.set_ValueOfColumn("IsApproved",false);
+		resAssignment.set_ValueOfColumn("IsInvoiced",false);
+		resAssignment.saveEx();
+		
+	}
+	//iDempiereConsulting __26/10/2021 -------END
+	
 	@Override
 	public int getParent_Team_ToDo_ID()
 	{
