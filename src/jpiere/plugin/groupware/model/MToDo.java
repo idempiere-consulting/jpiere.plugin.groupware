@@ -283,7 +283,10 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			{
 				processedReminders();
 				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
-				createResourceAssignment();
+				if(MToDo.JP_TODO_TYPE_Schedule.equals(getJP_ToDo_Type()))
+					createResourceAssignment();
+				/////
+				
 
 			}else if(MToDo.JP_TODO_STATUS_Completed.equals(get_ValueOld(MToDo.COLUMNNAME_JP_ToDo_Status))){
 
@@ -312,7 +315,7 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 
 		}
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
-		if(success && newRecord && MToDo.JP_TODO_STATUS_Completed.equals(getJP_ToDo_Status()))
+		if(success && newRecord && MToDo.JP_TODO_STATUS_Completed.equals(getJP_ToDo_Status()) && MToDo.JP_TODO_TYPE_Schedule.equals(getJP_ToDo_Type()))
 			createResourceAssignment();
 
 
@@ -522,14 +525,22 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 	
 	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 	private void createResourceAssignment() {
+		//Controllo per evitare doppinoni di resource assignment su stesso schedule
+		int result = DB.getSQLValueEx(null, "SELECT S_ResourceAssignment_ID FROM S_ResourceAssignment WHERE AD_Client_ID=? AND JP_ToDo_ID=?", getAD_Client_ID(), getJP_ToDo_ID());
+		if(result>0)
+			return;
+		/////
+		
 		MResourceAssignment resAssignment = new MResourceAssignment(getCtx(), 0, null);
 		X_C_ContactActivity cTask = new X_C_ContactActivity(getCtx(), getC_ContactActivity_ID(), null);
 		
+		//by pass per EventHandler plug-in resourceAttendance
+		resAssignment.setQty(BigDecimal.ZERO);
+		//////
 		resAssignment.set_ValueOfColumn("JP_ToDo_ID", getJP_ToDo_ID());
 		resAssignment.setAD_Org_ID(cTask.getAD_Org_ID());
 		resAssignment.set_ValueOfColumn("C_ContactActivity_ID",cTask.getC_ContactActivity_ID());
 		resAssignment.setAssignDateFrom(getJP_ToDo_ScheduledStartTime());
-		//resAssignment.setQty((p_qty==null)?BigDecimal.ZERO:p_qty);
 		resAssignment.setAssignDateTo(getJP_ToDo_ScheduledEndTime());
 		resAssignment.setName(getName());
 		resAssignment.setDescription(getDescription());
@@ -541,7 +552,8 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 		resAssignment.set_ValueOfColumn("isDoNotInvoice", cTask.get_ValueAsBoolean("isDoNotInvoice"));
 		resAssignment.set_ValueOfColumn("Percent", new BigDecimal(100));
 		resAssignment.set_ValueOfColumn("PlannedQty", BigDecimal.ZERO);
-		resAssignment.set_ValueOfColumn("C_Project_ID",cTask.get_ValueAsInt("C_Project_ID"));
+		if(cTask.get_ValueAsInt("C_Project_ID")>0)
+			resAssignment.set_ValueOfColumn("C_Project_ID",cTask.get_ValueAsInt("C_Project_ID"));
 		//resAssignment.set_ValueOfColumn("Priority",p_priority); TODO 
 		resAssignment.set_ValueOfColumn("IsApproved",false);
 		resAssignment.set_ValueOfColumn("IsInvoiced",false);
