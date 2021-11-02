@@ -467,7 +467,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 		//*** AD_User_ID ***//
 		MLookup lookup_AD_User_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_AD_User_ID),  DisplayType.Search);
-		WSearchEditor Editor_AD_User_ID = new WSearchEditor(lookup_AD_User_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_AD_User_ID), null, true, p_IsNewRecord? false : true, true);
+		WSearchEditor Editor_AD_User_ID = new WSearchEditor(lookup_AD_User_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_AD_User_ID), null, true, !p_IsUpdatable, true);
 		Editor_AD_User_ID.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(Editor_AD_User_ID.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_AD_User_ID, Editor_AD_User_ID);
@@ -475,14 +475,14 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		//*** C_ContactActivity_ID ***//
 		MLookup lookup_C_ContactActivity_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_ContactActivity_ID),  DisplayType.Search);
-		WSearchEditor Editor_C_ContactActivity_ID = new WSearchEditor(lookup_C_ContactActivity_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID), null, true, p_IsNewRecord? false : true, true);
+		WSearchEditor Editor_C_ContactActivity_ID = new WSearchEditor(lookup_C_ContactActivity_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID), null, true, !p_IsUpdatable, true);
 		Editor_C_ContactActivity_ID.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(Editor_C_ContactActivity_ID.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_C_ContactActivity_ID, Editor_C_ContactActivity_ID);
 		
 		//*** C_BPartner_ID ***//
 		MLookup lookup_C_BPartner_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_BPartner_ID),  DisplayType.Search);
-		WSearchEditor Editor_C_BPartner_ID = new WSearchEditor(lookup_C_BPartner_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID), null, true, p_IsNewRecord? false : true, true);
+		WSearchEditor Editor_C_BPartner_ID = new WSearchEditor(lookup_C_BPartner_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID), null, true, !p_IsUpdatable, true);
 		Editor_C_BPartner_ID.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(Editor_C_BPartner_ID.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_C_BPartner_ID, Editor_C_BPartner_ID);
@@ -667,6 +667,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		//iDempiereConsulting __26/10/2021 ------END
@@ -710,7 +711,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	{
 		if(p_IsNewRecord)
 		{
-			map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(0);
+			map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(Env.getAD_Org_ID(ctx));
 			map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_AD_User_ID);
 			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_c_contactActivity_ID==0? null : p_c_contactActivity_ID);
@@ -2892,13 +2893,15 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		}
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		else if(MToDo.COLUMNNAME_C_ContactActivity_ID.equals(name)) {
+			if(value==null)
+				return;
 			int contactActivity_ID = (Integer)value;
 			X_C_ContactActivity cTask = new X_C_ContactActivity(ctx, contactActivity_ID, null);
 			String strNAME = "";
 			if(cTask.get_ValueAsString("DocumentNo")!=null && !cTask.get_ValueAsString("DocumentNo").isEmpty())
 				strNAME = cTask.get_ValueAsString("DocumentNo");
 			if(cTask.get_ValueAsString("Name")!=null && !cTask.get_ValueAsString("Name").isEmpty())
-				strNAME = ((!strNAME.isEmpty())?"-":"").concat(cTask.get_ValueAsString("Name"));
+				strNAME = ((!strNAME.isEmpty())?(strNAME+"-"):"").concat(cTask.get_ValueAsString("Name"));
 			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
 			map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cTask.getDescription());
 			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cTask.get_ValueAsInt("C_BPartner_ID"));

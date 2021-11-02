@@ -14,6 +14,7 @@
 
 package jpiere.plugin.groupware.form;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,6 +59,7 @@ import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_NonBusinessDay;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Language;
@@ -71,6 +73,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Caption;
+import org.zkoss.zul.Cell;
 import org.zkoss.zul.Center;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
@@ -682,7 +685,24 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 
 			day_label.setStyle("text-align: center; color:#ffffff ;");
 			day_header = new Div();
-			day_header.appendChild(day_label);
+			
+			//iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress + conteggio ore
+			//day_header.appendChild(day_label);
+			Grid grd_1 = GridFactory.newGridLayout();
+			day_header.appendChild(grd_1);
+			Rows rows_1 = grd_1.newRows();
+			Row roww_1 = rows_1.newRow();
+			rows_1.setStyle("padding:4px 2px 4px 4px; background-color:"+ (isNonBusinessDay? colorNonBusinessDay : color1) +";");
+			roww_1.appendCellChild(day_label);
+			Label hours = new Label("");
+			hours.setStyle("text-align: right; color:#ffffff ; font-weight: bold;");
+			if(grid !=null && grid.getAttribute("TOT_HOURS")!=null) {
+				hours.setValue(""+grid.getAttribute("TOT_HOURS"));
+				grid.removeAttribute("TOT_HOURS");
+			}
+			roww_1.appendCellChild(hours);
+			//iDempiereConsulting __28/10/2021 -------END
+			
 			day_header.setStyle("padding:4px 2px 4px 4px; background-color:"+ (isNonBusinessDay? colorNonBusinessDay : color1) +";");
 			day.appendChild(day_header);
 
@@ -844,6 +864,24 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 				day_label.setStyle("text-align: center; color:#ffffff ");
 
 				day_header = new Div();
+				
+				//iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress + conteggio ore
+				//day_header.appendChild(day_label);
+				Grid grd_1 = GridFactory.newGridLayout();
+				day_header.appendChild(grd_1);
+				Rows rows_1 = grd_1.newRows();
+				Row roww_1 = rows_1.newRow();
+				rows_1.setStyle("padding:4px 2px 4px 4px; background-color:"+ (isNonBusinessDay? colorNonBusinessDay : color1) +";");
+				roww_1.appendCellChild(day_label);
+				Label hours = new Label("");
+				hours.setStyle("text-align: right; color:#ffffff ; font-weight: bold;");
+				if(grid !=null && grid.getAttribute("TOT_HOURS")!=null) {
+					hours.setValue(""+grid.getAttribute("TOT_HOURS"));
+					grid.removeAttribute("TOT_HOURS");
+				}
+				roww_1.appendCellChild(hours);
+				//iDempiereConsulting __28/10/2021 -------END
+				
 				day_header.setStyle("padding:4px 2px 4px 4px; background-color:"+ (isNonBusinessDay? colorNonBusinessDay : color1) +";");
 				day_header.appendChild(day_label);
 				day.appendChild(day_header);
@@ -867,7 +905,57 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
     	return div;
     }
 
-
+  //iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress + conteggio ore
+//    private Grid createGrid(ArrayList<ToDoCalendarEvent>  map_ToDo, LocalDate localDate)
+//    {
+//    	if(map_ToDo == null)
+//    		return null;
+//
+//		if(map_ToDo == null || map_ToDo.size() == 0)
+//			return null;
+//
+//		Grid grid = GridFactory.newGridLayout();
+//		grid.setMold("paging");
+//		grid.setPageSize(10);
+//		grid.setPagingPosition("bottom");
+//
+//		Rows gridRows = grid.newRows();
+//		Row row = null;
+//		ToolBarButton btn = null;
+//		int count = 0;
+//		int skipCount = 0;
+//		for (ToDoCalendarEvent toDoCalEvent : map_ToDo)
+//		{
+//			count++;
+//			if(isSkip(toDoCalEvent))
+//			{
+//				skipCount++;
+//				if(count == map_ToDo.size())//last
+//				{
+//					if(count == skipCount)
+//					{
+//						return null;
+//					}
+//
+//				}
+//				continue;
+//			}
+//
+//			row = gridRows.newRow();
+//			btn = new ToolBarButton(toDoCalEvent.getToDo().getName());
+//			btn.setSclass("link");
+//			createTitle(toDoCalEvent.getToDo(), btn, localDate);
+//			btn.addEventListener(Events.ON_CLICK, this);
+//			btn.addEventListener(Events.ON_MOUSE_OVER, this);
+//			btn.setAttribute("ToDo", toDoCalEvent);
+//			row.appendChild(btn);
+//
+//
+//		}
+//
+//    	return grid;
+//    }
+   
     private Grid createGrid(ArrayList<ToDoCalendarEvent>  map_ToDo, LocalDate localDate)
     {
     	if(map_ToDo == null)
@@ -886,6 +974,7 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 		ToolBarButton btn = null;
 		int count = 0;
 		int skipCount = 0;
+		BigDecimal totHour = BigDecimal.ZERO;
 		for (ToDoCalendarEvent toDoCalEvent : map_ToDo)
 		{
 			count++;
@@ -904,19 +993,58 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 			}
 
 			row = gridRows.newRow();
+			
+			Div cnt_row = new Div();
+			Grid grdForBtn_lbl = GridFactory.newGridLayout();
+			Rows rrs = grdForBtn_lbl.newRows();
+			Row rw = rrs.newRow();
+			Cell cell_1 = new Cell();
+			cell_1.setRowspan(1);
+			
 			btn = new ToolBarButton(toDoCalEvent.getToDo().getName());
 			btn.setSclass("link");
+			
+			if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(toDoCalEvent.getToDo().getJP_ToDo_Status()))
+				btn.setStyle("background-color:#3399ff");
+			else if(MToDo.JP_TODO_STATUS_Completed.equals(toDoCalEvent.getToDo().getJP_ToDo_Status()))
+				btn.setStyle("background-color:#999999");
+			
 			createTitle(toDoCalEvent.getToDo(), btn, localDate);
 			btn.addEventListener(Events.ON_CLICK, this);
 			btn.addEventListener(Events.ON_MOUSE_OVER, this);
 			btn.setAttribute("ToDo", toDoCalEvent);
-			row.appendChild(btn);
+			cell_1.appendChild(btn);
+			rw.appendChild(cell_1);
 
-
+			Cell cell_2 = new Cell();
+			cell_2.setWidth("8%");
+			if(MToDo.JP_TODO_STATUS_Completed.equals(toDoCalEvent.getToDo().getJP_ToDo_Status())) {
+				Label lblHour = new Label();
+				lblHour.setStyle("font-weight: bold;");
+				BigDecimal resultQTY = DB.getSQLValueBD(null, "SELECT Qty FROM S_ResourceAssignment WHERE AD_Client_ID=? AND JP_ToDo_ID=?", Env.getAD_Client_ID(ctx), toDoCalEvent.getToDo().get_ID());
+				if(resultQTY !=null && resultQTY.compareTo(BigDecimal.ZERO)==1) {
+					lblHour.setText(resultQTY.toString());
+					totHour = totHour.add(resultQTY);
+				}
+				else
+					lblHour.setText("");
+				cell_2.appendChild(lblHour);
+			}
+			else {
+				Label sp = new Label(" ");
+				//row.appendCellChild(sp);
+				cell_2.appendChild(sp);
+			}
+			rw.appendChild(cell_2);
+			cnt_row.appendChild(grdForBtn_lbl);
+			
+			row.appendChild(cnt_row);
 		}
-
+		grid.setAttribute("TOT_HOURS", totHour);
+		
     	return grid;
     }
+  //iDempiereConsulting __28/10/2021 -------END
 
 
     private Timestamp today = Timestamp.valueOf(LocalDateTime.of(LocalDateTime.now().toLocalDate(), LocalTime.MIN));
