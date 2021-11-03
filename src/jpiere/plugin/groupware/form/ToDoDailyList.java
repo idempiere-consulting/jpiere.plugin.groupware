@@ -1020,7 +1020,7 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 			cell_2.setWidth("8%");
 			if(MToDo.JP_TODO_STATUS_Completed.equals(toDoCalEvent.getToDo().getJP_ToDo_Status())) {
 				Label lblHour = new Label();
-				lblHour.setStyle("font-weight: bold;");
+				lblHour.setStyle("font-weight: bold; text-align: right;");
 				BigDecimal resultQTY = DB.getSQLValueBD(null, "SELECT Qty FROM S_ResourceAssignment WHERE AD_Client_ID=? AND JP_ToDo_ID=?", Env.getAD_Client_ID(ctx), toDoCalEvent.getToDo().get_ID());
 				if(resultQTY !=null && resultQTY.compareTo(BigDecimal.ZERO)==1) {
 					lblHour.setText(resultQTY.toString());
