@@ -56,12 +56,14 @@ import org.adempiere.webui.editor.WYesNoEditor;
 import org.adempiere.webui.event.DialogEvents;
 import org.adempiere.webui.event.ValueChangeEvent;
 import org.adempiere.webui.event.ValueChangeListener;
+import org.adempiere.webui.panel.WAttachment;
 import org.adempiere.webui.session.SessionManager;
 import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.GridField;
 import org.compiere.model.GridFieldVO;
+import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -184,6 +186,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	private Button saveBtn = null;
 	private Button processBtn = null;
 	private Button reminderBtn = null;
+	//iDempiereConsulting __08/11/2021 --- Btn attachment
+	private Button attachmentBtn = null;
+	private MAttachment existAttachment = null;
+	////
 	private Button leftBtn = null;
 	private Button rightBtn = null;
 	private Button deleteBtn = null;
@@ -210,6 +216,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	public final static String BUTTON_NAME_REMINDER = "REMINDER";
 	public final static String BUTTON_NEW_REMINDER = "NEW_REMINDER";
 	public final static String BUTTON_UPDATE_REMINDER = "UPDATE_REMINDER";
+	
+	//iDempiereConsulting __08/11/2021 --- Btn attachment
+	public final static String BUTTON_NAME_ATTACHMENT = "ATTACHMENT";
+	///
 
 	private final static String BUTTON_NAME_PREVIOUS_TODO = "PREVIOUS";
 	private final static String BUTTON_NAME_NEXT_TODO = "NEXT";
@@ -940,6 +950,34 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		hlyaout.appendChild(reminderBtn);
 
 		hlyaout.appendChild(GroupwareToDoUtil.getDividingLine());
+		
+		//iDempiereConsulting __08/11/2021 --- Attachment
+		if(attachmentBtn == null)
+		{
+			attachmentBtn = new Button();
+			if (ThemeManager.isUseFontIconForImage())
+				attachmentBtn.setIconSclass("z-icon-Attachment");
+			else
+				attachmentBtn.setImage(ThemeManager.getThemeResource("images/Attachment16.png"));
+			attachmentBtn.setClass("btn-small");
+			attachmentBtn.setName(BUTTON_NAME_ATTACHMENT);
+			attachmentBtn.setTooltiptext(Msg.getMsg(ctx, "Attachment"));
+			attachmentBtn.addEventListener(Events.ON_CLICK, this);
+			if(p_iToDo!=null) {
+				int tableID = 0;
+				if(p_iToDo instanceof MToDo)
+					tableID = MTable.getTable_ID(MToDo.Table_Name);
+				else if(p_iToDo instanceof MToDoTeam)
+					tableID = MTable.getTable_ID(MToDoTeam.Table_Name);
+				existAttachment = MAttachment.get(ctx, tableID, p_iToDo.get_ID());
+				if(existAttachment!=null && existAttachment.getAD_Attachment_ID()>0)
+					attachmentBtn.setStyle("border-color: green; border-style:groove;  border-width: 3px;");
+			}
+		}
+		hlyaout.appendChild(attachmentBtn);
+
+		hlyaout.appendChild(GroupwareToDoUtil.getDividingLine());
+		//iDempiereConsulting __08/11/2021 -------END
 
 		//Left Button
 		if(leftBtn  == null)
@@ -1647,6 +1685,33 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				AEnv.showWindow(personalToDoListWindow);
 
 			}
+			//iDempiereConsulting __08/11/2021 --- Attachment
+			else if(BUTTON_NAME_ATTACHMENT.equals(btnName)) {
+				int tableID = 0;
+				int recordID = (p_iToDo!=null)?p_iToDo.get_ID():0;
+				int attachmentID = 0;
+				if(recordID>0 && existAttachment!=null) {
+					if(p_iToDo instanceof MToDo)
+						tableID = MTable.getTable_ID(MToDo.Table_Name);
+					else if(p_iToDo instanceof MToDoTeam)
+						tableID = MTable.getTable_ID(MToDoTeam.Table_Name);
+					existAttachment = MAttachment.get(ctx, tableID, recordID);
+					if(existAttachment != null)
+						attachmentID = existAttachment.getAD_Attachment_ID();
+					WAttachment win = new WAttachment (	-1, attachmentID,tableID, recordID, null);		
+					win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
+						@Override
+						public void onEvent(Event event) throws Exception {
+							hideBusyMask();
+						}
+					});
+					this.appendChild(win);
+					showBusyMask(win);		
+					LayoutUtils.openOverlappedWindow(this, win, "middle_center");
+					win.focus();
+				}
+			}
+			//iDempiereConsulting __08/11/2021 ------END
 
 		}
 		else if (event.getTarget() instanceof ProcessModalDialog)
@@ -2897,13 +2962,16 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				return;
 			int contactActivity_ID = (Integer)value;
 			X_C_ContactActivity cTask = new X_C_ContactActivity(ctx, contactActivity_ID, null);
-			String strNAME = "";
-			if(cTask.get_ValueAsString("DocumentNo")!=null && !cTask.get_ValueAsString("DocumentNo").isEmpty())
-				strNAME = cTask.get_ValueAsString("DocumentNo");
-			if(cTask.get_ValueAsString("Name")!=null && !cTask.get_ValueAsString("Name").isEmpty())
-				strNAME = ((!strNAME.isEmpty())?(strNAME+"-"):"").concat(cTask.get_ValueAsString("Name"));
-			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
-			map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cTask.getDescription());
+			if(map_Editor.get(MToDo.COLUMNNAME_Name).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Name).getValue()).isEmpty()) {
+				String strNAME = "";
+				if(cTask.get_ValueAsString("DocumentNo")!=null && !cTask.get_ValueAsString("DocumentNo").isEmpty())
+					strNAME = cTask.get_ValueAsString("DocumentNo");
+				if(cTask.get_ValueAsString("Name")!=null && !cTask.get_ValueAsString("Name").isEmpty())
+					strNAME = ((!strNAME.isEmpty())?(strNAME+"-"):"").concat(cTask.get_ValueAsString("Name"));
+				map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
+			}
+			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
+				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cTask.getDescription());
 			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cTask.get_ValueAsInt("C_BPartner_ID"));
 			
 		}

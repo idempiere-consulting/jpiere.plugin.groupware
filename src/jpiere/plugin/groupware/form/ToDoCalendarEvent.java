@@ -323,6 +323,13 @@ public class ToDoCalendarEvent extends SimpleCalendarEvent {
 
 					//Default - Short
 					personal_Default_Short_Title = i_ToDo.getName();
+					//iDempiereConsulting __08/11/2021 ---- Nome del BPartner visibile
+					if(i_ToDo.getC_BPartner_ID()>0) {
+						String bp_name = ((MToDo)i_ToDo).getC_BPartner().getValue();
+						if(bp_name!=null && !bp_name.isEmpty())
+							personal_Default_Short_Title = bp_name+"___"+i_ToDo.getName();
+					}
+					//iDempiereConsulting __08/11/2021 -------END
 					personal_Default_Short_Content = i_ToDo.getDescription();
 					team_Default_Short_Title = userName;
 					team_Default_Short_Content = i_ToDo.getName();
