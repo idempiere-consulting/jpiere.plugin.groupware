@@ -49,6 +49,7 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.FDialog;
 import org.compiere.model.I_C_NonBusinessDay;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
@@ -1191,10 +1192,22 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 				if(isAllDaySchedule)
 				{
 					btn.setLabel((isTeamToDo ? team : "") + toDo.getName());
+					//iDempiereConsulting __10/11/2021 ---- BP Name
+					if(toDo.getC_BPartner_ID()>0) {
+						MBPartner bPartner = MBPartner.get(ctx, toDo.getC_BPartner_ID());
+						btn.setLabel((isTeamToDo ? team : "") +(" "+bPartner.getValue()+"_")+ toDo.getName());
+					}
+					//iDempiereConsulting __10/11/2021 --------END
 
 				}else {
 
 					btn.setLabel(startTime.toString() + " - " +endTime.toString() + " " + (isTeamToDo ? team : "") + toDo.getName());
+					//iDempiereConsulting __10/11/2021 ---- BP Name
+					if(toDo.getC_BPartner_ID()>0) {
+						MBPartner bPartner = MBPartner.get(ctx, toDo.getC_BPartner_ID());
+						btn.setLabel(startTime.toString() + " - " +endTime.toString() + " " +(isTeamToDo ? team : "") +(" "+bPartner.getValue()+"_")+ toDo.getName());
+					}
+					//iDempiereConsulting __10/11/2021 --------END
 
 				}
 
@@ -1208,16 +1221,34 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 				if(isAllDaySchedule)
 				{
 					btn.setLabel((isTeamToDo ? team : "") +toDo.getName());
+					//iDempiereConsulting __10/11/2021 ---- BP Name
+					if(toDo.getC_BPartner_ID()>0) {
+						MBPartner bPartner = MBPartner.get(ctx, toDo.getC_BPartner_ID());
+						btn.setLabel((isTeamToDo ? team : "") +(" "+bPartner.getValue()+"_")+ toDo.getName());
+					}
+					//iDempiereConsulting __10/11/2021 --------END
 
 				}else {
 
 					if(localDate.compareTo(startDate) == 0)
 					{
 						btn.setLabel(startTime.toString() + " - 24:00 " + (isTeamToDo ? team : "") +toDo.getName());
+						//iDempiereConsulting __10/11/2021 ---- BP Name
+						if(toDo.getC_BPartner_ID()>0) {
+							MBPartner bPartner = MBPartner.get(ctx, toDo.getC_BPartner_ID());
+							btn.setLabel(startTime.toString() + " - 24:00 " + (isTeamToDo ? team : "") +(" "+bPartner.getValue()+"_")+ toDo.getName());
+						}
+						//iDempiereConsulting __10/11/2021 --------END
 
 					}else if(localDate.compareTo(endDate) == 0) {
 
 						btn.setLabel(LocalTime.MIN.toString() + " - "  + endTime.toString() + " " + (isTeamToDo ? team : "") +toDo.getName());
+						//iDempiereConsulting __10/11/2021 ---- BP Name
+						if(toDo.getC_BPartner_ID()>0) {
+							MBPartner bPartner = MBPartner.get(ctx, toDo.getC_BPartner_ID());
+							btn.setLabel(LocalTime.MIN.toString() + " - "  + endTime.toString() + " " + (isTeamToDo ? team : "") +(" "+bPartner.getValue()+"_")+ toDo.getName());
+						}
+						//iDempiereConsulting __10/11/2021 --------END
 					}
 
 				}

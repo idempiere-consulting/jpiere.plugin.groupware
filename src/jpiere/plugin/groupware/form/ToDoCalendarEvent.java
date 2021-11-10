@@ -327,7 +327,7 @@ public class ToDoCalendarEvent extends SimpleCalendarEvent {
 					if(i_ToDo.getC_BPartner_ID()>0) {
 						String bp_name = ((MToDo)i_ToDo).getC_BPartner().getValue();
 						if(bp_name!=null && !bp_name.isEmpty())
-							personal_Default_Short_Title = bp_name+"___"+i_ToDo.getName();
+							personal_Default_Short_Title = bp_name+"_"+i_ToDo.getName();
 					}
 					//iDempiereConsulting __08/11/2021 -------END
 					personal_Default_Short_Content = i_ToDo.getDescription();

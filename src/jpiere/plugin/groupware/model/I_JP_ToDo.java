@@ -471,6 +471,19 @@ public interface I_JP_ToDo
 	  */
 	public boolean isProcessed();
 
+    /** Column name Qty */
+    public static final String COLUMNNAME_Qty = "Qty";
+
+	/** Set Quantity.
+	  * Quantity
+	  */
+	public void setQty (BigDecimal Qty);
+
+	/** Get Quantity.
+	  * Quantity
+	  */
+	public BigDecimal getQty();
+
     /** Column name Record_ID */
     public static final String COLUMNNAME_Record_ID = "Record_ID";
 
@@ -483,19 +496,6 @@ public interface I_JP_ToDo
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
-
-    /** Column name S_ResourceAssignment_ID */
-    public static final String COLUMNNAME_S_ResourceAssignment_ID = "S_ResourceAssignment_ID";
-
-	/** Set Resource Assignment.
-	  * Resource Assignment
-	  */
-	public void setS_ResourceAssignment_ID (int S_ResourceAssignment_ID);
-
-	/** Get Resource Assignment.
-	  * Resource Assignment
-	  */
-	public int getS_ResourceAssignment_ID();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

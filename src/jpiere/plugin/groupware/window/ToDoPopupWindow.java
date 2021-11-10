@@ -148,9 +148,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	private int p_Add_Hours = 5;
 	private int p_Add_Mins = 15;
 	
-	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment + qty
 	private int p_c_contactActivity_ID = 0;
 	private int p_c_bpartner_ID = 0;
+	private BigDecimal p_qty = null; 
 	private static final BigDecimal NY_STATUS_PERCENT = BigDecimal.ZERO; //percent for 'Not yet started'
 	private static final BigDecimal WP_STATUS_PERCENT = new BigDecimal(50); //percent for 'Work in progress'
 	private static final BigDecimal CO_STATUS_PERCENT = new BigDecimal(100); //percent for 'Completed'
@@ -186,9 +187,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	private Button saveBtn = null;
 	private Button processBtn = null;
 	private Button reminderBtn = null;
-	//iDempiereConsulting __08/11/2021 --- Btn attachment
+	//iDempiereConsulting __08/11/2021 --- Btn attachment + btn copy
 	private Button attachmentBtn = null;
 	private MAttachment existAttachment = null;
+	private Button copyBtn = null;
 	////
 	private Button leftBtn = null;
 	private Button rightBtn = null;
@@ -217,8 +219,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	public final static String BUTTON_NEW_REMINDER = "NEW_REMINDER";
 	public final static String BUTTON_UPDATE_REMINDER = "UPDATE_REMINDER";
 	
-	//iDempiereConsulting __08/11/2021 --- Btn attachment
+	//iDempiereConsulting __08/11/2021 --- Btn attachment + btn copy
 	public final static String BUTTON_NAME_ATTACHMENT = "ATTACHMENT";
+	public final static String BUTTON_NAME_COPY = "COPY";
 	///
 
 	private final static String BUTTON_NAME_PREVIOUS_TODO = "PREVIOUS";
@@ -269,8 +272,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			ZKUpdateUtil.setWindowWidthX(this,  SessionManager.getAppDesktop().getClientInfo().desktopWidth);
 			ZKUpdateUtil.setWindowHeightX(this,  SessionManager.getAppDesktop().getClientInfo().desktopHeight);
 		}else {
-			ZKUpdateUtil.setWindowWidthX(this, 420);
-			ZKUpdateUtil.setWindowHeightX(this, 580);
+			ZKUpdateUtil.setWindowWidthX(this, 478);
+			ZKUpdateUtil.setWindowHeightX(this, 612);
 		}
 
 		this.setSclass("popup-dialog request-dialog");
@@ -448,6 +451,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime)) );
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Label.put(MToDo.COLUMNNAME_Qty, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Qty)) );
+		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Status, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status)) );
 		map_Label.put(MToDo.COLUMNNAME_IsOpenToDoJP, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP)) );
 
@@ -608,7 +614,15 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		Timebox endTimebox = editor_JP_ToDo_ScheduledEndTime.getComponent();
 		endTimebox.setFormat("HH:mm");
 		map_Editor.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime, editor_JP_ToDo_ScheduledEndTime);
-
+		
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** QTY ***//
+		WNumberEditor editor_qty = new WNumberEditor(MToDo.COLUMNNAME_Name, true, p_haveParentTeamToDo? true : !p_IsUpdatable, true, DisplayType.Number, null);
+		editor_qty.addValueChangeListener(this);
+		ZKUpdateUtil.setHflex(editor_qty.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_Qty, editor_qty);
+		//iDempiereConsulting __26/10/2021 --------- END 
+		
 		//*** JP_ToDo_Status ***//
 		MLookup lookup_JP_ToDo_Status = MLookupFactory.get(ctx, 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_JP_ToDo_Status),  DisplayType.List);
 		WTableDirEditor editor_JP_ToDo_Status = new WTableDirEditor(lookup_JP_ToDo_Status, Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status), null, true, p_IsUpdatable_ToDoStatus? false: true, true);
@@ -691,6 +705,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_IsEndDateAllDayJP).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Editor.get(MToDo.COLUMNNAME_Qty).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		//iDempiereConsulting __26/10/2021 ------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setReadWrite(p_IsUpdatable_ToDoStatus? true: false);
 		map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 
@@ -735,6 +752,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate).setValue(p_InitialScheduledEndTime);
 			map_Editor.get(MToDo.COLUMNNAME_IsEndDateAllDayJP).setValue("N");
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(p_InitialScheduledEndTime);
+			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+			map_Editor.get(MToDo.COLUMNNAME_Qty).setValue((p_qty==null || p_qty.equals(BigDecimal.ZERO))? null : p_qty);
+			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(MToDo.JP_TODO_STATUS_NotYetStarted);
 			map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setValue("Y");
 
@@ -757,6 +777,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate).setValue(p_iToDo.getJP_ToDo_ScheduledEndTime());
 			map_Editor.get(MToDo.COLUMNNAME_IsEndDateAllDayJP).setValue(p_iToDo.isEndDateAllDayJP());
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(p_iToDo.getJP_ToDo_ScheduledEndTime());
+			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+			map_Editor.get(MToDo.COLUMNNAME_Qty).setValue(p_iToDo.getQty());
+			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(p_iToDo.getJP_ToDo_Status());
 			map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setValue(p_iToDo.isOpenToDoJP());
 
@@ -877,6 +900,21 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 		hlyaout.appendChild(GroupwareToDoUtil.getDividingLine());
 
+		//iDempiereConsulting __08/11/2021 --- Btn Copy
+		if(copyBtn == null)
+		{
+			copyBtn = new Button();
+			if (ThemeManager.isUseFontIconForImage())
+				copyBtn.setIconSclass("z-icon-Copy");
+			else
+				copyBtn.setImage(ThemeManager.getThemeResource("images/Copy16.png"));
+			copyBtn.setClass("btn-small");
+			copyBtn.setName(BUTTON_NAME_COPY);
+			copyBtn.setTooltiptext(Msg.getMsg(ctx, "Copy"));
+			copyBtn.addEventListener(Events.ON_CLICK, this);
+		}
+		hlyaout.appendChild(copyBtn);
+		//iDempiereConsulting __08/11/2021 -------END
 
 		//Undo Button
 		if(undoBtn == null)
@@ -1282,6 +1320,13 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 		}
 
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** QTY ***//
+		row = rows.newRow();
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_Qty), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_Qty).getComponent(),2);
+		//iDempiereConsulting __26/10/2021 --------END
+		
 		//*** JP_ToDo_Status ***//
 		row = rows.newRow();
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_Status), true),2);
@@ -1614,6 +1659,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 						scheduledEndTime.setValue(ts_ScheduledStartTime);
 					}
 				}
+				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+				calcQty();
+				//iDempiereConsulting __26/10/2021 -------END
 
 			}else if(BUTTON_NAME_ADD_END_HOURS.equals(btnName) || BUTTON_NAME_ADD_END_MINS.equals(btnName) ) {
 
@@ -1669,6 +1717,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 					}
 
 				}
+				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+				calcQty();
+				//iDempiereConsulting __26/10/2021 -------END
 
 			}else if(BUTTON_NAME_SHOW_TEAM_MEMBER.equals(btnName)) {
 
@@ -1685,23 +1736,29 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				AEnv.showWindow(personalToDoListWindow);
 
 			}
-			//iDempiereConsulting __08/11/2021 --- Attachment
+			//iDempiereConsulting __08/11/2021 --- Attachment + Copy
 			else if(BUTTON_NAME_ATTACHMENT.equals(btnName)) {
-				int tableID = 0;
+				int tableID = (p_iToDo instanceof MToDo)?MTable.getTable_ID(MToDo.Table_Name):MTable.getTable_ID(MToDoTeam.Table_Name);
 				int recordID = (p_iToDo!=null)?p_iToDo.get_ID():0;
 				int attachmentID = 0;
-				if(recordID>0 && existAttachment!=null) {
-					if(p_iToDo instanceof MToDo)
-						tableID = MTable.getTable_ID(MToDo.Table_Name);
-					else if(p_iToDo instanceof MToDoTeam)
-						tableID = MTable.getTable_ID(MToDoTeam.Table_Name);
-					existAttachment = MAttachment.get(ctx, tableID, recordID);
+				if(recordID>0) {
+//					if(p_iToDo instanceof MToDo)
+//						tableID = MTable.getTable_ID(MToDo.Table_Name);
+//					else if(p_iToDo instanceof MToDoTeam)
+//						tableID = MTable.getTable_ID(MToDoTeam.Table_Name);
+					if(existAttachment==null)
+						existAttachment = MAttachment.get(ctx, tableID, recordID);
 					if(existAttachment != null)
 						attachmentID = existAttachment.getAD_Attachment_ID();
 					WAttachment win = new WAttachment (	-1, attachmentID,tableID, recordID, null);		
 					win.addEventListener(DialogEvents.ON_WINDOW_CLOSE, new EventListener<Event>() {
 						@Override
 						public void onEvent(Event event) throws Exception {
+							existAttachment = MAttachment.get(ctx, tableID, recordID);
+							if(existAttachment != null)
+								attachmentBtn.setStyle("border-color: green; border-style:groove;  border-width: 3px;");
+							else
+								attachmentBtn.setStyle(null);
 							hideBusyMask();
 						}
 					});
@@ -1710,6 +1767,13 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 					LayoutUtils.openOverlappedWindow(this, win, "middle_center");
 					win.focus();
 				}
+			}
+			else if(BUTTON_NAME_COPY.equals(btnName)) {
+				hideBusyMask();
+				ToDoPopupWindow todoWindow = new ToDoPopupWindow(i_PersonalToDoPopupwindowCaller, -1);
+				todoWindow.copyEvent(p_iToDo, p_I_ToDo_ID);
+
+				SessionManager.getAppDesktop().showWindow(todoWindow);
 			}
 			//iDempiereConsulting __08/11/2021 ------END
 
@@ -1844,6 +1908,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_iToDo.setPercent (db_ToDo.getPercent());
 				p_iToDo.setPriority (db_ToDo.getPriority());
 				p_iToDo.setS_ResourceAssignment_ID (db_ToDo.getS_ResourceAssignment_ID());
+				p_iToDo.setQty(db_ToDo.getQty());
 				//iDempiereConsulting __26/10/2021 -------END
 				if(p_iToDo.get_TableName().equals(MToDo.Table_Name))
 				{
@@ -2213,6 +2278,16 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			p_iToDo.setC_BPartner_ID ((Integer)editor.getValue());
 		}
 		valueChangeFieldMap.put(MToDo.COLUMNNAME_C_BPartner_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_C_BPartner_ID));
+		
+		//Check Qty
+		editor = map_Editor.get(MToDo.COLUMNNAME_Qty);
+		if(editor.getValue() == null || ((BigDecimal)editor.getValue()).equals(BigDecimal.ZERO))
+		{
+			;
+		}else {
+			p_iToDo.setQty((BigDecimal)editor.getValue());
+		}
+		valueChangeFieldMap.put(MToDo.COLUMNNAME_Qty, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_Qty));
 		
 		if(p_iToDo.getC_ContactActivity_ID()>0) {
 		
@@ -2891,10 +2966,17 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 					{
 						WTimeEditor scheduledEndTime = (WTimeEditor)map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime);
 						scheduledEndDate.setValue(ts_ScheduledStartTime);
-						scheduledEndTime.setValue(ts_ScheduledStartTime);
+						//iDempiereConsulting __10/11/2021 --- Cambio del giorno, ma non cambio l'orario
+						//scheduledEndTime.setValue(ts_ScheduledStartTime);
+						Timestamp endTime = Timestamp.valueOf(LocalDateTime.of(ts_ScheduledStartTime.toLocalDateTime().toLocalDate(), ts_ScheduledEndDate.toLocalDateTime().toLocalTime()));
+						scheduledEndTime.setValue(endTime);
+						//iDempiereConsulting __10/11/2021 -------END
 					}
 				}
-
+				
+				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+				calcQty();
+				//iDempiereConsulting __26/10/2021 -------END
 			}
 
 		}else if(MToDo.COLUMNNAME_IsStartDateAllDayJP.equals(name)) {
@@ -2939,12 +3021,20 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 						{
 							WTimeEditor scheduledStartTime = (WTimeEditor)map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime);
 							scheduledStartDate.setValue(ts_ScheduledEndTime);
-							scheduledStartTime.setValue(ts_ScheduledEndTime);
+							//iDempiereConsulting __10/11/2021 --- Cambio del giorno, ma non cambio l'orario
+							//scheduledStartTime.setValue(ts_ScheduledEndTime);
+							Timestamp startTime = Timestamp.valueOf(LocalDateTime.of(ts_ScheduledEndTime.toLocalDateTime().toLocalDate(), ts_ScheduledStartDate.toLocalDateTime().toLocalTime()));
+							scheduledStartTime.setValue(startTime);
+							//iDempiereConsulting __10/11/2021 -------END
 						}
 
 					}
 
 				}
+				
+				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+				calcQty();
+				//iDempiereConsulting __26/10/2021 -------END
 			}
 
 		}else if(MToDo.COLUMNNAME_IsEndDateAllDayJP.equals(name)) {
@@ -3036,4 +3126,29 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		Object value = map_Editor.get(MToDoTeam.COLUMNNAME_JP_Team_ID).getValue();
 		return value == null ? 0 : ((Integer)value).intValue();
 	}
+	
+	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+	private void calcQty() {
+		LocalDateTime start = ((Timestamp)((WTimeEditor)map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime)).getValue()).toLocalDateTime();
+		LocalDateTime end = ((Timestamp)((WTimeEditor)map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime)).getValue()).toLocalDateTime();
+		long diff = ChronoUnit.MINUTES.between(start, end);
+		BigDecimal hours = new BigDecimal(diff).divide(new BigDecimal(60));
+		((WNumberEditor)map_Editor.get(MToDo.COLUMNNAME_Qty)).setValue(hours);
+	}
+	//iDempiereConsulting __26/10/2021 -------END
+	
+	//iDempiereConsulting __08/11/2021 --- Btn Copy
+	public void copyEvent(I_ToDo copyToDo, int todo_ID) {
+		p_iToDo = copyToDo;
+		p_I_ToDo_ID = todo_ID;
+		
+		p_IsNewRecord = false;
+		updateEditorValue();
+		p_IsNewRecord = true;
+		p_iToDo = null;
+		p_I_ToDo_ID = 0;
+		
+	}
+	//iDempiereConsulting __08/11/2021 ---------END
+	
 }

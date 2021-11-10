@@ -251,6 +251,17 @@ public interface I_ToDo
 	  * Resource Assignment
 	  */
 	public int getS_ResourceAssignment_ID();
+	
+	/** Set Quantity.
+		@param Qty 
+		Quantity
+	 */
+	public void setQty (BigDecimal Qty);
+
+	/** Get Quantity.
+		@return Quantity
+	  */
+	public BigDecimal getQty (); 
 
 	//iDempiereConsulting __26/10/2021 -------END
 

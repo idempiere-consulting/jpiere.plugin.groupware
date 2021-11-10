@@ -15,7 +15,6 @@ package jpiere.plugin.groupware.model;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -541,7 +540,14 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 		resAssignment.setAD_Org_ID(cTask.getAD_Org_ID());
 		resAssignment.set_ValueOfColumn("C_ContactActivity_ID",cTask.getC_ContactActivity_ID());
 		resAssignment.setAssignDateFrom(getJP_ToDo_ScheduledStartTime());
-		resAssignment.setAssignDateTo(getJP_ToDo_ScheduledEndTime());
+
+		//per calcolo/impostazione direttamente da evento calendario di quantità ore addebitate
+		//resAssignment.setAssignDateTo(getJP_ToDo_ScheduledEndTime());
+		long minutes = (getQty().multiply(new BigDecimal(60))).longValue();
+		LocalDateTime start = getJP_ToDo_ScheduledStartTime().toLocalDateTime();
+		resAssignment.setAssignDateTo(Timestamp.valueOf(start.plusMinutes(minutes)));
+		/////
+		
 		resAssignment.setName(getName());
 		resAssignment.setDescription(getDescription());
 		int resourceID = DB.getSQLValue(null, "SELECT S_Resource_ID FROM S_Resource WHERE isActive='Y' AND AD_Client_ID=? AND AD_User_ID=?", cTask.getAD_Client_ID(),getAD_User_ID());
@@ -622,6 +628,18 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 	public int getRelated_ToDo_ID()
 	{
 		return getJP_ToDo_Related_ID();
+	}
+
+
+	@Override
+	public void setS_ResourceAssignment_ID(int S_ResourceAssignment_ID) {
+		return ;
+	}
+
+
+	@Override
+	public int getS_ResourceAssignment_ID() {
+		return 0;
 	}
 
 

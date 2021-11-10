@@ -733,4 +733,16 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 		return 0;
 	}
 
+
+	@Override
+	public void setQty(BigDecimal Qty) {
+		
+	}
+
+
+	@Override
+	public BigDecimal getQty() {
+		return null;
+	}
+
 }
