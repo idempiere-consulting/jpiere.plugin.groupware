@@ -745,4 +745,16 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 		return null;
 	}
 
+
+	@Override
+	public void setProductTransfer_ID(int ProductTransfer_ID) {
+		
+	}
+
+
+	@Override
+	public int getProductTransfer_ID() {
+		return 0;
+	}
+
 }

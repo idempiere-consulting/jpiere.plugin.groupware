@@ -262,6 +262,12 @@ public interface I_ToDo
 		@return Quantity
 	  */
 	public BigDecimal getQty (); 
+	
+	/** Set Product Code Transfer	  */
+	public void setProductTransfer_ID (int ProductTransfer_ID);
+
+	/** Get Product Code Transfer	  */
+	public int getProductTransfer_ID();
 
 	//iDempiereConsulting __26/10/2021 -------END
 

@@ -471,6 +471,17 @@ public interface I_JP_ToDo
 	  */
 	public boolean isProcessed();
 
+    /** Column name ProductTransfer_ID */
+    public static final String COLUMNNAME_ProductTransfer_ID = "ProductTransfer_ID";
+
+	/** Set Product Code Transfer	  */
+	public void setProductTransfer_ID (int ProductTransfer_ID);
+
+	/** Get Product Code Transfer	  */
+	public int getProductTransfer_ID();
+
+	public org.compiere.model.I_M_Product getProductTransfer() throws RuntimeException;
+
     /** Column name Qty */
     public static final String COLUMNNAME_Qty = "Qty";
 

@@ -137,7 +137,8 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 	private String p_JP_ToDo_Status = null ;
 	private boolean p_IsDisplaySchedule = true;
 	private boolean p_IsDisplayTask = false;
-
+	//iDempiereConsulting __11/11/2021 ---- switch tra ore pianificate su evento calendario e ore effettive addebitate
+	private boolean p_IsDisplayTimeEventPopup = false;
 
 
 	private String p_JP_ToDo_Calendar = MGroupwareUser.JP_TODO_CALENDAR_PersonalToDo;
@@ -167,6 +168,9 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 
 	private Button leftBtn ;
 	private Button rightBtn ;
+	
+	//iDempiereConsulting __11/11/2021 ---- switch tra ore pianificate su evento calendario e ore effettive addebitate
+	private WYesNoEditor editor_IsDisplayTimeEventPopup;
 
 	/** Center **/
 	private Center mainBorderLayout_Center;
@@ -533,6 +537,17 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 		row.appendChild(GroupwareToDoUtil.getDividingLine());
 
 		row.appendChild(GroupwareToDoUtil.createSpaceDiv());
+		
+		//iDempiereConsulting __11/11/2021 ---- switch tra ore pianificate su evento calendario e ore effettive addebitate
+		editor_IsDisplayTimeEventPopup = new WYesNoEditor("DisplayTimeEventPopup", "Display Time Schedule", null, true, false, true);
+		editor_IsDisplayTimeEventPopup.setValue(p_IsDisplayTask);
+		editor_IsDisplayTimeEventPopup.addValueChangeListener(this);
+		ZKUpdateUtil.setVflex(editor_IsDisplayTimeEventPopup.getComponent(), "min");
+		ZKUpdateUtil.setHflex(editor_IsDisplayTimeEventPopup.getComponent(), "min");
+		div = GroupwareToDoUtil.createEditorDiv(editor_IsDisplayTimeEventPopup, true);
+		div.setStyle("vertical-align: middle; white-space: nowrap;");
+		row.appendChild(div);
+		//iDempiereConsulting __11/11/2021 --------END
 
     	return outerDiv;
 
@@ -1022,7 +1037,12 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 			if(MToDo.JP_TODO_STATUS_Completed.equals(toDoCalEvent.getToDo().getJP_ToDo_Status())) {
 				Label lblHour = new Label();
 				lblHour.setStyle("font-weight: bold; text-align: right;");
-				BigDecimal resultQTY = DB.getSQLValueBD(null, "SELECT Qty FROM S_ResourceAssignment WHERE AD_Client_ID=? AND JP_ToDo_ID=?", Env.getAD_Client_ID(ctx), toDoCalEvent.getToDo().get_ID());
+				BigDecimal resultQTY = BigDecimal.ZERO;
+				if(p_IsDisplayTimeEventPopup)
+					resultQTY = DB.getSQLValueBD(null, "SELECT EXTRACT (EPOCH FROM (JP_ToDo_ScheduledEndTime - JP_ToDo_ScheduledStartTime))/3600 as diff FROM JP_ToDo WHERE AD_Client_ID=? AND JP_ToDo_ID=?", Env.getAD_Client_ID(ctx), toDoCalEvent.getToDo().get_ID());
+				else
+					resultQTY = DB.getSQLValueBD(null, "SELECT Qty FROM S_ResourceAssignment WHERE AD_Client_ID=? AND JP_ToDo_ID=?", Env.getAD_Client_ID(ctx), toDoCalEvent.getToDo().get_ID());
+				
 				if(resultQTY !=null && resultQTY.compareTo(BigDecimal.ZERO)==1) {
 					lblHour.setText(resultQTY.toString());
 					totHour = totHour.add(resultQTY);
@@ -1481,7 +1501,14 @@ public class ToDoDailyList implements I_ToDoPopupwindowCaller, I_ToDoCalendarEve
 			}
 
 		}
+		//iDempiereConsulting __11/11/2021 ---- switch tra ore pianificate su evento calendario e ore effettive addebitate
+		else if("DisplayTimeEventPopup".equals(name)) {
 
+			p_IsDisplayTimeEventPopup = (boolean)value;
+			editor_IsDisplayTimeEventPopup.setValue(value);
+			refreshToDoList(false);
+
+		}
 	}
 
 

@@ -563,6 +563,8 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 		//resAssignment.set_ValueOfColumn("Priority",p_priority); TODO 
 		resAssignment.set_ValueOfColumn("IsApproved",false);
 		resAssignment.set_ValueOfColumn("IsInvoiced",false);
+		if(getProductTransfer_ID()>0)
+			resAssignment.set_ValueOfColumn("ProductTransfer_ID", getProductTransfer_ID());
 		resAssignment.saveEx();
 		
 	}

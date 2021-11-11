@@ -34,7 +34,7 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211110L;
+	private static final long serialVersionUID = 20211111L;
 
     /** Standard Constructor */
     public X_JP_ToDo (Properties ctx, int JP_ToDo_ID, String trxName)
@@ -804,6 +804,31 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 			return "Y".equals(oo);
 		}
 		return false;
+	}
+
+	public org.compiere.model.I_M_Product getProductTransfer() throws RuntimeException
+    {
+		return (org.compiere.model.I_M_Product)MTable.get(getCtx(), org.compiere.model.I_M_Product.Table_Name)
+			.getPO(getProductTransfer_ID(), get_TrxName());	}
+
+	/** Set Product Code Transfer.
+		@param ProductTransfer_ID Product Code Transfer	  */
+	public void setProductTransfer_ID (int ProductTransfer_ID)
+	{
+		if (ProductTransfer_ID < 1) 
+			set_Value (COLUMNNAME_ProductTransfer_ID, null);
+		else 
+			set_Value (COLUMNNAME_ProductTransfer_ID, Integer.valueOf(ProductTransfer_ID));
+	}
+
+	/** Get Product Code Transfer.
+		@return Product Code Transfer	  */
+	public int getProductTransfer_ID () 
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_ProductTransfer_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
 	}
 
 	/** Set Quantity.

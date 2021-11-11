@@ -69,6 +69,7 @@ import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
@@ -152,6 +153,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	private int p_c_contactActivity_ID = 0;
 	private int p_c_bpartner_ID = 0;
 	private BigDecimal p_qty = null; 
+	private int p_prodTransfer_ID = 0;
 	private static final BigDecimal NY_STATUS_PERCENT = BigDecimal.ZERO; //percent for 'Not yet started'
 	private static final BigDecimal WP_STATUS_PERCENT = new BigDecimal(50); //percent for 'Work in progress'
 	private static final BigDecimal CO_STATUS_PERCENT = new BigDecimal(100); //percent for 'Completed'
@@ -273,7 +275,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			ZKUpdateUtil.setWindowHeightX(this,  SessionManager.getAppDesktop().getClientInfo().desktopHeight);
 		}else {
 			ZKUpdateUtil.setWindowWidthX(this, 478);
-			ZKUpdateUtil.setWindowHeightX(this, 612);
+			ZKUpdateUtil.setWindowHeightX(this, 632);
 		}
 
 		this.setSclass("popup-dialog request-dialog");
@@ -453,6 +455,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime)) );
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		map_Label.put(MToDo.COLUMNNAME_Qty, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Qty)) );
+		map_Label.put(MToDo.COLUMNNAME_ProductTransfer_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_ProductTransfer_ID)) );
 		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Status, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status)) );
 		map_Label.put(MToDo.COLUMNNAME_IsOpenToDoJP, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP)) );
@@ -621,6 +624,13 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		editor_qty.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(editor_qty.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_Qty, editor_qty);
+		
+		//*** PRODUCT TRANSFER ID ***//
+		MLookup lookup_ProductTransfer = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MProduct.Table_Name,  MProduct.COLUMNNAME_M_Product_ID),  DisplayType.Search);
+		WSearchEditor editor_ProductTransfer = new WSearchEditor(MToDo.COLUMNNAME_ProductTransfer_ID, false, p_haveParentTeamToDo? true : !p_IsUpdatable, true, lookup_ProductTransfer);
+		editor_ProductTransfer.addValueChangeListener(this);
+		ZKUpdateUtil.setHflex(editor_ProductTransfer.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_ProductTransfer_ID, editor_ProductTransfer);
 		//iDempiereConsulting __26/10/2021 --------- END 
 		
 		//*** JP_ToDo_Status ***//
@@ -707,6 +717,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		map_Editor.get(MToDo.COLUMNNAME_Qty).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		//iDempiereConsulting __26/10/2021 ------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setReadWrite(p_IsUpdatable_ToDoStatus? true: false);
 		map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
@@ -754,6 +765,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(p_InitialScheduledEndTime);
 			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 			map_Editor.get(MToDo.COLUMNNAME_Qty).setValue((p_qty==null || p_qty.equals(BigDecimal.ZERO))? null : p_qty);
+			map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).setValue(p_prodTransfer_ID);
 			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(MToDo.JP_TODO_STATUS_NotYetStarted);
 			map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setValue("Y");
@@ -779,6 +791,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(p_iToDo.getJP_ToDo_ScheduledEndTime());
 			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 			map_Editor.get(MToDo.COLUMNNAME_Qty).setValue(p_iToDo.getQty());
+			map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).setValue(p_iToDo.getProductTransfer_ID());
 			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(p_iToDo.getJP_ToDo_Status());
 			map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setValue(p_iToDo.isOpenToDoJP());
@@ -1325,6 +1338,11 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		row = rows.newRow();
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_Qty), true),2);
 		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_Qty).getComponent(),2);
+		
+		//*** PRODUCT TRANSFER ID ***//
+		row = rows.newRow();
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_ProductTransfer_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).getComponent(),2);
 		//iDempiereConsulting __26/10/2021 --------END
 		
 		//*** JP_ToDo_Status ***//
@@ -1909,6 +1927,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_iToDo.setPriority (db_ToDo.getPriority());
 				p_iToDo.setS_ResourceAssignment_ID (db_ToDo.getS_ResourceAssignment_ID());
 				p_iToDo.setQty(db_ToDo.getQty());
+				p_iToDo.setProductTransfer_ID(db_ToDo.getProductTransfer_ID());
 				//iDempiereConsulting __26/10/2021 -------END
 				if(p_iToDo.get_TableName().equals(MToDo.Table_Name))
 				{
@@ -2288,6 +2307,17 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			p_iToDo.setQty((BigDecimal)editor.getValue());
 		}
 		valueChangeFieldMap.put(MToDo.COLUMNNAME_Qty, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_Qty));
+		
+		//Check Product transfer id
+		editor = map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID);
+		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+		{
+			p_iToDo.setProductTransfer_ID(-1);
+
+		}else {
+			p_iToDo.setProductTransfer_ID((Integer)editor.getValue());
+		}
+		valueChangeFieldMap.put(MToDo.COLUMNNAME_ProductTransfer_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_ProductTransfer_ID));
 		
 		if(p_iToDo.getC_ContactActivity_ID()>0) {
 		

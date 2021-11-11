@@ -28,6 +28,7 @@ import org.compiere.model.GridFieldVO;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MProduct;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.util.DisplayType;
@@ -111,6 +112,10 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime)) );
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Label.put(MToDo.COLUMNNAME_Qty, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Qty)) );
+		map_Label.put(MToDo.COLUMNNAME_ProductTransfer_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_ProductTransfer_ID)) );
+		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Status, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status)) );
 		map_Label.put(MToDo.COLUMNNAME_IsOpenToDoJP, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP)) );
 
@@ -239,6 +244,18 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		endTimebox.setButtonVisible(false);
 		map_Editor.put(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime, editor_JP_ToDo_ScheduledEndTime);
 
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** QTY ***//
+		WNumberEditor editor_qty = new WNumberEditor(MToDo.COLUMNNAME_Name, false, true, false, DisplayType.Number, null);
+		ZKUpdateUtil.setHflex(editor_qty.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_Qty, editor_qty);
+		
+		//*** PRODUCT TRANSFER ID ***//
+		MLookup lookup_ProductTransfer = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MProduct.Table_Name,  MProduct.COLUMNNAME_M_Product_ID),  DisplayType.Search);
+		WSearchEditor editor_ProductTransfer = new WSearchEditor(MToDo.COLUMNNAME_ProductTransfer_ID, false, true, false, lookup_ProductTransfer);
+		ZKUpdateUtil.setHflex(editor_ProductTransfer.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_ProductTransfer_ID, editor_ProductTransfer);
+		//iDempiereConsulting __26/10/2021 --------- END 
 
 		//*** JP_ToDo_Status ***//
 		MLookup lookup_JP_ToDo_Status = MLookupFactory.get(ctx, 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_JP_ToDo_Status),  DisplayType.List);
@@ -535,6 +552,18 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 			}
 		}
 
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		//*** QTY ***//
+		row = rows.newRow();
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_Qty), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_Qty).getComponent(),2);
+		
+		//*** PRODUCT TRANSFER ID ***//
+		row = rows.newRow();
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_ProductTransfer_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).getComponent(),2);
+		//iDempiereConsulting __26/10/2021 --------END
+
 		//*** JP_ToDo_Status ***//
 		row = rows.newRow();
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_Status), true),2);
@@ -796,6 +825,10 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(null);
 		}
 
+		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
+		map_Editor.get(MToDo.COLUMNNAME_Qty).setValue(p_I_ToDo.getQty());
+		map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).setValue(p_I_ToDo.getProductTransfer_ID());
+		//iDempiereConsulting __26/10/2021 -------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(p_I_ToDo.getJP_ToDo_Status());
 		map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setValue(p_I_ToDo.isOpenToDoJP());
 
