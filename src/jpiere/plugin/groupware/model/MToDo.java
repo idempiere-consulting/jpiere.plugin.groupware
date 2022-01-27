@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import org.compiere.model.MMessage;
 import org.compiere.model.MResourceAssignment;
@@ -31,6 +32,8 @@ import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
 import org.compiere.util.Util;
+
+import it.cnet.idempiere.resourceAttendance.util.UtilResource;
 
 /**
  * JPIERE-0469: JPiere Groupware
@@ -64,6 +67,26 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			log.saveError("Error", msg);
 			return false;
 		}
+		//iDempiereConsulting __27/01/2022 ---- Calculate costs 
+		if(this.get_ColumnIndex("LIT_StandardHour")>0 && this.getQty()!=null && this.getJP_ToDo_ScheduledEndTime()!=null){
+			UtilResource uResource = new UtilResource();
+			int S_Resource_ID = DB.getSQLValue(null, "SELECT S_Resource_ID FROM S_Resource WHERE AD_Client_ID=? AND AD_User_ID=?", getAD_Client_ID(), getAD_User_ID());
+			TreeMap<String, BigDecimal> costs =  uResource.calcolateExtra(S_Resource_ID, getJP_ToDo_ScheduledStartTime(), getJP_ToDo_ScheduledEndTime());
+			
+			set_ValueOfColumn("LIT_StandardHour",costs.get("LIT_StandardHour"));
+			set_ValueOfColumn("LIT_StandardCost",costs.get("LIT_StandardCost"));
+			set_ValueOfColumn("LIT_ExtraHour",costs.get("LIT_ExtraHour"));
+			set_ValueOfColumn("LIT_ExtraCost",costs.get("LIT_ExtraCost"));
+			set_ValueOfColumn("LIT_NightHour",costs.get("LIT_NightHour"));
+			set_ValueOfColumn("LIT_NightCost",costs.get("LIT_NightCost"));
+			set_ValueOfColumn("LIT_HolidayHour",costs.get("LIT_HolidayHour"));
+			set_ValueOfColumn("LIT_HolidayCost",costs.get("LIT_HolidayCost"));
+			set_ValueOfColumn("LIT_Holidaynighthour",costs.get("LIT_Holidaynighthour"));
+			set_ValueOfColumn("LIT_HolidayNightCost",costs.get("LIT_HolidayNightCost"));
+			set_ValueOfColumn("LIT_NightExtraHour",costs.get("LIT_NightExtraHour"));
+			set_ValueOfColumn("LIT_NightExtraCost",costs.get("LIT_NightExtraCost"));
+		}
+		//iDempiereConsulting __27/01/2022 ---------- END
 
 		return true;
 	}

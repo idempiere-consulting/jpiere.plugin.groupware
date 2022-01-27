@@ -22,6 +22,7 @@ import java.util.logging.Level;
 
 import org.compiere.model.MMessage;
 import org.compiere.model.MRole;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.util.CCache;
@@ -99,15 +100,19 @@ public class MTeam extends X_JP_Team {
 			}
 
 		}
-
-		int AD_User_ID = Env.getAD_User_ID(getCtx());
-		if(getAD_User_ID() != 0 && getAD_User_ID() != AD_User_ID)
-		{
-			MMessage msg = MMessage.get(getCtx(), "AccessCannotUpdate");//You cannot update this record - You don't have the privileges
-			String msgString = msg.get_Translation("MsgText") + " - "+ msg.get_Translation("MsgTip");
-			return msgString + " : " + Msg.getMsg(getCtx(), "JP_DifferentUser");//Different User
+		
+		//iDempiereConsulting __26/01/2022 --- BlockUser da variabile di sistema
+		boolean isBlockUser = MSysConfig.getBooleanValue("LIT_JP_Todo_BlockUser", false, Env.getAD_Client_ID(getCtx()));
+		if(isBlockUser) {
+			int AD_User_ID = Env.getAD_User_ID(getCtx());
+			if(getAD_User_ID() != 0 && getAD_User_ID() != AD_User_ID)
+			{
+				MMessage msg = MMessage.get(getCtx(), "AccessCannotUpdate");//You cannot update this record - You don't have the privileges
+				String msgString = msg.get_Translation("MsgText") + " - "+ msg.get_Translation("MsgTip");
+				return msgString + " : " + Msg.getMsg(getCtx(), "JP_DifferentUser");//Different User
+			}
 		}
-
+		//iDempiereConsulting __26/01/2022 ---------- END
 		return null;
 	}
 

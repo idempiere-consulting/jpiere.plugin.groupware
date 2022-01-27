@@ -32,7 +32,7 @@ public interface I_JP_ToDo
     /** TableName=JP_ToDo */
     public static final String Table_Name = "JP_ToDo";
 
-    /** AD_Table_ID=1000273 */
+    /** AD_Table_ID=1000137 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -418,6 +418,123 @@ public interface I_JP_ToDo
 
 	/** Get JP_ToDo_UU	  */
 	public String getJP_ToDo_UU();
+
+    /** Column name LIT_ExtraCost */
+    public static final String COLUMNNAME_LIT_ExtraCost = "LIT_ExtraCost";
+
+	/** Set Extra Cost	  */
+	public void setLIT_ExtraCost (BigDecimal LIT_ExtraCost);
+
+	/** Get Extra Cost	  */
+	public BigDecimal getLIT_ExtraCost();
+
+    /** Column name LIT_ExtraHour */
+    public static final String COLUMNNAME_LIT_ExtraHour = "LIT_ExtraHour";
+
+	/** Set Extra Hour	  */
+	public void setLIT_ExtraHour (BigDecimal LIT_ExtraHour);
+
+	/** Get Extra Hour	  */
+	public BigDecimal getLIT_ExtraHour();
+
+    /** Column name LIT_HolidayCost */
+    public static final String COLUMNNAME_LIT_HolidayCost = "LIT_HolidayCost";
+
+	/** Set LIT_HolidayCost	  */
+	public void setLIT_HolidayCost (BigDecimal LIT_HolidayCost);
+
+	/** Get LIT_HolidayCost	  */
+	public BigDecimal getLIT_HolidayCost();
+
+    /** Column name LIT_HolidayHour */
+    public static final String COLUMNNAME_LIT_HolidayHour = "LIT_HolidayHour";
+
+	/** Set Holiday Hour	  */
+	public void setLIT_HolidayHour (BigDecimal LIT_HolidayHour);
+
+	/** Get Holiday Hour	  */
+	public BigDecimal getLIT_HolidayHour();
+
+    /** Column name LIT_HolidayNightCost */
+    public static final String COLUMNNAME_LIT_HolidayNightCost = "LIT_HolidayNightCost";
+
+	/** Set LIT_HolidayNightCost	  */
+	public void setLIT_HolidayNightCost (BigDecimal LIT_HolidayNightCost);
+
+	/** Get LIT_HolidayNightCost	  */
+	public BigDecimal getLIT_HolidayNightCost();
+
+    /** Column name LIT_Holidaynighthour */
+    public static final String COLUMNNAME_LIT_Holidaynighthour = "LIT_Holidaynighthour";
+
+	/** Set Holiday night hour	  */
+	public void setLIT_Holidaynighthour (BigDecimal LIT_Holidaynighthour);
+
+	/** Get Holiday night hour	  */
+	public BigDecimal getLIT_Holidaynighthour();
+
+    /** Column name LIT_NightCost */
+    public static final String COLUMNNAME_LIT_NightCost = "LIT_NightCost";
+
+	/** Set Night Cost	  */
+	public void setLIT_NightCost (BigDecimal LIT_NightCost);
+
+	/** Get Night Cost	  */
+	public BigDecimal getLIT_NightCost();
+
+    /** Column name LIT_NightExtraCost */
+    public static final String COLUMNNAME_LIT_NightExtraCost = "LIT_NightExtraCost";
+
+	/** Set Night Extra Cost	  */
+	public void setLIT_NightExtraCost (BigDecimal LIT_NightExtraCost);
+
+	/** Get Night Extra Cost	  */
+	public BigDecimal getLIT_NightExtraCost();
+
+    /** Column name LIT_NightExtraHour */
+    public static final String COLUMNNAME_LIT_NightExtraHour = "LIT_NightExtraHour";
+
+	/** Set Night Extra Hour	  */
+	public void setLIT_NightExtraHour (BigDecimal LIT_NightExtraHour);
+
+	/** Get Night Extra Hour	  */
+	public BigDecimal getLIT_NightExtraHour();
+
+    /** Column name LIT_NightHour */
+    public static final String COLUMNNAME_LIT_NightHour = "LIT_NightHour";
+
+	/** Set Night Hour	  */
+	public void setLIT_NightHour (BigDecimal LIT_NightHour);
+
+	/** Get Night Hour	  */
+	public BigDecimal getLIT_NightHour();
+
+    /** Column name LIT_StandardCost */
+    public static final String COLUMNNAME_LIT_StandardCost = "LIT_StandardCost";
+
+	/** Set Standard Cost	  */
+	public void setLIT_StandardCost (BigDecimal LIT_StandardCost);
+
+	/** Get Standard Cost	  */
+	public BigDecimal getLIT_StandardCost();
+
+    /** Column name LIT_StandardHour */
+    public static final String COLUMNNAME_LIT_StandardHour = "LIT_StandardHour";
+
+	/** Set Standard Hour	  */
+	public void setLIT_StandardHour (BigDecimal LIT_StandardHour);
+
+	/** Get Standard Hour	  */
+	public BigDecimal getLIT_StandardHour();
+
+    /** Column name LIT_TotalCost */
+    public static final String COLUMNNAME_LIT_TotalCost = "LIT_TotalCost";
+
+	/** Set Total Cost	  */
+	public void setLIT_TotalCost (BigDecimal LIT_TotalCost);
+
+	/** Get Total Cost	  */
+	public BigDecimal getLIT_TotalCost();
 
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";

@@ -12,6 +12,11 @@
 			<layout>p2</layout>
 			<url>file:///opt/repos/idempiere/org.idempiere.p2/target/repository/</url>
 		</repository>
+		<repository>
+			<id>resourceAttendanceP2</id>
+			<layout>p2</layout>
+			<url>file:///opt/repos/idempiere-ita-plugin/it.cnet.impl.resource_attendance/target/</url>
+		</repository>
 	</repositories>
 
 	<build>

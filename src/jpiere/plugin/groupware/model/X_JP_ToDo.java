@@ -34,7 +34,7 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20211111L;
+	private static final long serialVersionUID = 20220126L;
 
     /** Standard Constructor */
     public X_JP_ToDo (Properties ctx, int JP_ToDo_ID, String trxName)
@@ -705,6 +705,226 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public String getJP_ToDo_UU () 
 	{
 		return (String)get_Value(COLUMNNAME_JP_ToDo_UU);
+	}
+
+	/** Set Extra Cost.
+		@param LIT_ExtraCost Extra Cost	  */
+	public void setLIT_ExtraCost (BigDecimal LIT_ExtraCost)
+	{
+		set_Value (COLUMNNAME_LIT_ExtraCost, LIT_ExtraCost);
+	}
+
+	/** Get Extra Cost.
+		@return Extra Cost	  */
+	public BigDecimal getLIT_ExtraCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_ExtraCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Extra Hour.
+		@param LIT_ExtraHour Extra Hour	  */
+	public void setLIT_ExtraHour (BigDecimal LIT_ExtraHour)
+	{
+		set_Value (COLUMNNAME_LIT_ExtraHour, LIT_ExtraHour);
+	}
+
+	/** Get Extra Hour.
+		@return Extra Hour	  */
+	public BigDecimal getLIT_ExtraHour () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_ExtraHour);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set LIT_HolidayCost.
+		@param LIT_HolidayCost LIT_HolidayCost	  */
+	public void setLIT_HolidayCost (BigDecimal LIT_HolidayCost)
+	{
+		set_Value (COLUMNNAME_LIT_HolidayCost, LIT_HolidayCost);
+	}
+
+	/** Get LIT_HolidayCost.
+		@return LIT_HolidayCost	  */
+	public BigDecimal getLIT_HolidayCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_HolidayCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Holiday Hour.
+		@param LIT_HolidayHour Holiday Hour	  */
+	public void setLIT_HolidayHour (BigDecimal LIT_HolidayHour)
+	{
+		set_Value (COLUMNNAME_LIT_HolidayHour, LIT_HolidayHour);
+	}
+
+	/** Get Holiday Hour.
+		@return Holiday Hour	  */
+	public BigDecimal getLIT_HolidayHour () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_HolidayHour);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set LIT_HolidayNightCost.
+		@param LIT_HolidayNightCost LIT_HolidayNightCost	  */
+	public void setLIT_HolidayNightCost (BigDecimal LIT_HolidayNightCost)
+	{
+		set_Value (COLUMNNAME_LIT_HolidayNightCost, LIT_HolidayNightCost);
+	}
+
+	/** Get LIT_HolidayNightCost.
+		@return LIT_HolidayNightCost	  */
+	public BigDecimal getLIT_HolidayNightCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_HolidayNightCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Holiday night hour.
+		@param LIT_Holidaynighthour Holiday night hour	  */
+	public void setLIT_Holidaynighthour (BigDecimal LIT_Holidaynighthour)
+	{
+		set_Value (COLUMNNAME_LIT_Holidaynighthour, LIT_Holidaynighthour);
+	}
+
+	/** Get Holiday night hour.
+		@return Holiday night hour	  */
+	public BigDecimal getLIT_Holidaynighthour () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_Holidaynighthour);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Night Cost.
+		@param LIT_NightCost Night Cost	  */
+	public void setLIT_NightCost (BigDecimal LIT_NightCost)
+	{
+		set_Value (COLUMNNAME_LIT_NightCost, LIT_NightCost);
+	}
+
+	/** Get Night Cost.
+		@return Night Cost	  */
+	public BigDecimal getLIT_NightCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_NightCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Night Extra Cost.
+		@param LIT_NightExtraCost Night Extra Cost	  */
+	public void setLIT_NightExtraCost (BigDecimal LIT_NightExtraCost)
+	{
+		set_Value (COLUMNNAME_LIT_NightExtraCost, LIT_NightExtraCost);
+	}
+
+	/** Get Night Extra Cost.
+		@return Night Extra Cost	  */
+	public BigDecimal getLIT_NightExtraCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_NightExtraCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Night Extra Hour.
+		@param LIT_NightExtraHour Night Extra Hour	  */
+	public void setLIT_NightExtraHour (BigDecimal LIT_NightExtraHour)
+	{
+		set_Value (COLUMNNAME_LIT_NightExtraHour, LIT_NightExtraHour);
+	}
+
+	/** Get Night Extra Hour.
+		@return Night Extra Hour	  */
+	public BigDecimal getLIT_NightExtraHour () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_NightExtraHour);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Night Hour.
+		@param LIT_NightHour Night Hour	  */
+	public void setLIT_NightHour (BigDecimal LIT_NightHour)
+	{
+		set_Value (COLUMNNAME_LIT_NightHour, LIT_NightHour);
+	}
+
+	/** Get Night Hour.
+		@return Night Hour	  */
+	public BigDecimal getLIT_NightHour () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_NightHour);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Standard Cost.
+		@param LIT_StandardCost Standard Cost	  */
+	public void setLIT_StandardCost (BigDecimal LIT_StandardCost)
+	{
+		set_Value (COLUMNNAME_LIT_StandardCost, LIT_StandardCost);
+	}
+
+	/** Get Standard Cost.
+		@return Standard Cost	  */
+	public BigDecimal getLIT_StandardCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_StandardCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Standard Hour.
+		@param LIT_StandardHour Standard Hour	  */
+	public void setLIT_StandardHour (BigDecimal LIT_StandardHour)
+	{
+		set_Value (COLUMNNAME_LIT_StandardHour, LIT_StandardHour);
+	}
+
+	/** Get Standard Hour.
+		@return Standard Hour	  */
+	public BigDecimal getLIT_StandardHour () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_StandardHour);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Total Cost.
+		@param LIT_TotalCost Total Cost	  */
+	public void setLIT_TotalCost (BigDecimal LIT_TotalCost)
+	{
+		throw new IllegalArgumentException ("LIT_TotalCost is virtual column");	}
+
+	/** Get Total Cost.
+		@return Total Cost	  */
+	public BigDecimal getLIT_TotalCost () 
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_LIT_TotalCost);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
 	}
 
 	/** Set Name.
