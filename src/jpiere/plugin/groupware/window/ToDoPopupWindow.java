@@ -764,7 +764,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_IsEndDateAllDayJP).setValue("N");
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(p_InitialScheduledEndTime);
 			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
-			map_Editor.get(MToDo.COLUMNNAME_Qty).setValue((p_qty==null || p_qty.equals(BigDecimal.ZERO))? null : p_qty);
+			map_Editor.get(MToDo.COLUMNNAME_Qty).setValue((p_qty==null || p_qty.equals(BigDecimal.ZERO))? BigDecimal.ONE : p_qty);
 			map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).setValue(p_prodTransfer_ID);
 			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(MToDo.JP_TODO_STATUS_NotYetStarted);
