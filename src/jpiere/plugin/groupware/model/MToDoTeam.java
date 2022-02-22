@@ -679,6 +679,17 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 	public int getC_ContactActivity_ID() {
 		return 0;
 	}
+	
+	@Override
+	public void setR_Request_ID(int R_Request_ID) {
+		return;
+	}
+
+
+	@Override
+	public int getR_Request_ID() {
+		return 0;
+	}
 
 
 	@Override
@@ -757,4 +768,17 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 		return 0;
 	}
 
+
+	@Override
+	public void setIsComplete(boolean IsComplete) {
+		
+	}
+
+
+	@Override
+	public boolean isComplete() {
+		return false;
+	}
+
+	
 }

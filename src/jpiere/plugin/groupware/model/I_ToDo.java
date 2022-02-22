@@ -218,6 +218,10 @@ public interface I_ToDo
 	public void setC_ContactActivity_ID (int C_ContactActivity_ID);
 	public int getC_ContactActivity_ID ();
 	
+	/** R_Request_ID **/
+	public void setR_Request_ID (int R_Request_ID);
+	public int getR_Request_ID ();
+	
 	/** C_BPartner_ID **/
 	public void setC_BPartner_ID (int C_BPartner_ID);
 	public int getC_BPartner_ID ();
@@ -268,6 +272,10 @@ public interface I_ToDo
 
 	/** Get Product Code Transfer	  */
 	public int getProductTransfer_ID();
+	
+	/** IsComplete **/
+	public void setIsComplete (boolean IsComplete);
+	public boolean isComplete();
 
 	//iDempiereConsulting __26/10/2021 -------END
 

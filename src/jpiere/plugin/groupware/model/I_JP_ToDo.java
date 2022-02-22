@@ -23,7 +23,7 @@ import org.compiere.util.KeyNamePair;
 
 /** Generated Interface for JP_ToDo
  *  @author iDempiere (generated) 
- *  @version Release 8.2
+ *  @version Release 10
  */
 @SuppressWarnings("all")
 public interface I_JP_ToDo 
@@ -97,12 +97,12 @@ public interface I_JP_ToDo
     /** Column name C_BPartner_ID */
     public static final String COLUMNNAME_C_BPartner_ID = "C_BPartner_ID";
 
-	/** Set Business Partner .
+	/** Set Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public void setC_BPartner_ID (int C_BPartner_ID);
 
-	/** Get Business Partner .
+	/** Get Business Partner.
 	  * Identifies a Business Partner
 	  */
 	public int getC_BPartner_ID();
@@ -223,6 +223,19 @@ public interface I_JP_ToDo
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsComplete */
+    public static final String COLUMNNAME_IsComplete = "IsComplete";
+
+	/** Set Complete.
+	  * It is complete
+	  */
+	public void setIsComplete (boolean IsComplete);
+
+	/** Get Complete.
+	  * It is complete
+	  */
+	public boolean isComplete();
 
     /** Column name IsEndDateAllDayJP */
     public static final String COLUMNNAME_IsEndDateAllDayJP = "IsEndDateAllDayJP";
@@ -419,6 +432,26 @@ public interface I_JP_ToDo
 	/** Get JP_ToDo_UU	  */
 	public String getJP_ToDo_UU();
 
+    /** Column name LIT_Ad_User_Lead_ID */
+    public static final String COLUMNNAME_LIT_Ad_User_Lead_ID = "LIT_Ad_User_Lead_ID";
+
+	/** Set Lead ID	  */
+	public void setLIT_Ad_User_Lead_ID (int LIT_Ad_User_Lead_ID);
+
+	/** Get Lead ID	  */
+	public int getLIT_Ad_User_Lead_ID();
+
+	public org.compiere.model.I_AD_User getLIT_Ad_User_Lead() throws RuntimeException;
+
+    /** Column name LIT_ERPObjectTask_ID */
+    public static final String COLUMNNAME_LIT_ERPObjectTask_ID = "LIT_ERPObjectTask_ID";
+
+	/** Set ERP Object Task	  */
+	public void setLIT_ERPObjectTask_ID (int LIT_ERPObjectTask_ID);
+
+	/** Get ERP Object Task	  */
+	public int getLIT_ERPObjectTask_ID();
+
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -507,6 +540,21 @@ public interface I_JP_ToDo
 	  * Direct internal record ID
 	  */
 	public int getRecord_ID();
+
+    /** Column name R_Request_ID */
+    public static final String COLUMNNAME_R_Request_ID = "R_Request_ID";
+
+	/** Set Request.
+	  * Request from a Business Partner or Prospect
+	  */
+	public void setR_Request_ID (int R_Request_ID);
+
+	/** Get Request.
+	  * Request from a Business Partner or Prospect
+	  */
+	public int getR_Request_ID();
+
+	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

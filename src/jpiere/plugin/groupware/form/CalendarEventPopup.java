@@ -101,6 +101,7 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Label.get(MToDo.COLUMNNAME_AD_User_ID).setStyle("font-weight:bold;border-left: 4px solid #F39700;padding-left:2px;");
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		map_Label.put(MToDo.COLUMNNAME_C_ContactActivity_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID)) );
+		map_Label.put(MToDo.COLUMNNAME_R_Request_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_R_Request_ID)) );
 		map_Label.put(MToDo.COLUMNNAME_C_BPartner_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID)) );
 		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Type, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Type)) );
@@ -116,8 +117,10 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Label.put(MToDo.COLUMNNAME_Qty, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Qty)) );
 		map_Label.put(MToDo.COLUMNNAME_ProductTransfer_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_ProductTransfer_ID)) );
 		//iDempiereConsulting __26/10/2021 --------END
-		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Status, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status)) );
 		map_Label.put(MToDo.COLUMNNAME_IsOpenToDoJP, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP)) );
+		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Status, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status)) );
+		//iDempiereConsulting __22/02/2022 ---
+		map_Label.put(MToDo.COLUMNNAME_IsComplete, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_IsComplete)) );
 
 		map_Label.put(MToDo.COLUMNNAME_Comments, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_Comments)) );
 		map_Label.put(MToDo.COLUMNNAME_JP_Statistics_YesNo, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_Statistics_YesNo)));
@@ -151,7 +154,13 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		ZKUpdateUtil.setHflex(Editor_C_ContactActivity_ID.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_C_ContactActivity_ID, Editor_C_ContactActivity_ID);
 		
-		//*** C_ContactActivity_ID ***//
+		//*** R_Request_ID ***//
+		MLookup lookup_R_Request_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_R_Request_ID),  DisplayType.Search);
+		WSearchEditor Editor_R_Request_ID = new WSearchEditor(lookup_R_Request_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_R_Request_ID), null, false, true, true);
+		ZKUpdateUtil.setHflex(Editor_R_Request_ID.getComponent(), "true");
+		map_Editor.put(MToDo.COLUMNNAME_R_Request_ID, Editor_R_Request_ID);
+		
+		//*** C_BPartner_ID ***//
 		MLookup lookup_C_BPartner_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_BPartner_ID),  DisplayType.Search);
 		WSearchEditor Editor_C_BPartner_ID = new WSearchEditor(lookup_C_BPartner_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID), null, false, true, true);
 		ZKUpdateUtil.setHflex(Editor_C_BPartner_ID.getComponent(), "true");
@@ -257,16 +266,21 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Editor.put(MToDo.COLUMNNAME_ProductTransfer_ID, editor_ProductTransfer);
 		//iDempiereConsulting __26/10/2021 --------- END 
 
+		//*** IsOpenToDoJP ***//
+		WYesNoEditor editor_IsOpenToDoJP = new WYesNoEditor(MToDo.COLUMNNAME_IsOpenToDoJP, Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP), null, true, true, true);
+		map_Editor.put(MToDo.COLUMNNAME_IsOpenToDoJP, editor_IsOpenToDoJP);
+
 		//*** JP_ToDo_Status ***//
 		MLookup lookup_JP_ToDo_Status = MLookupFactory.get(ctx, 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_JP_ToDo_Status),  DisplayType.List);
 		WTableDirEditor editor_JP_ToDo_Status = new WTableDirEditor(lookup_JP_ToDo_Status, Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status), null, true, true, true);
 		ZKUpdateUtil.setHflex(editor_JP_ToDo_Status.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_JP_ToDo_Status, editor_JP_ToDo_Status);
 
-
-		//*** IsOpenToDoJP ***//
-		WYesNoEditor editor_IsOpenToDoJP = new WYesNoEditor(MToDo.COLUMNNAME_IsOpenToDoJP, Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP), null, true, true, true);
-		map_Editor.put(MToDo.COLUMNNAME_IsOpenToDoJP, editor_IsOpenToDoJP);
+		//iDempiereConsulting __22/02/2022 ---
+		//*** IsComplete ***//
+		WYesNoEditor editor_IsComplete = new WYesNoEditor(MToDo.COLUMNNAME_IsComplete, Msg.getElement(ctx, MToDo.COLUMNNAME_IsComplete), null, true, true, true);
+		map_Editor.put(MToDo.COLUMNNAME_IsComplete, editor_IsComplete);
+		//iDempiereConsulting __22/02/2022 --------END
 
 
 		//Statistics Info
@@ -461,6 +475,13 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).getComponent(),4);
 		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).showMenu();
 		
+		//*** R_Request_ID ***//
+		row = rows.newRow();
+		rows.appendChild(row);
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_R_Request_ID), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).getComponent(),4);
+		map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).showMenu();
+		
 		//*** C_BPartner_ID ***//
 		row = rows.newRow();
 		rows.appendChild(row);
@@ -564,16 +585,22 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).getComponent(),2);
 		//iDempiereConsulting __26/10/2021 --------END
 
+		//*** IsOpenToDoJP ***//
+		Div div_IsOpenToDoJP = new Div();
+		div_IsOpenToDoJP.appendChild(map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).getComponent());
+		row.appendCellChild(div_IsOpenToDoJP,2);
+				
 		//*** JP_ToDo_Status ***//
 		row = rows.newRow();
 		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_Status), true),2);
 		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).getComponent(),2);
 
-
-		//*** IsOpenToDoJP ***//
-		Div div_IsOpenToDoJP = new Div();
-		div_IsOpenToDoJP.appendChild(map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).getComponent());
-		row.appendCellChild(div_IsOpenToDoJP,2);
+		//iDempiereConsulting __22/02/2022 ---
+		//*** IsComplete ***//
+		Div div_IsComplete = new Div();
+		div_IsComplete.appendChild(map_Editor.get(MToDo.COLUMNNAME_IsComplete).getComponent());
+		row.appendCellChild(div_IsComplete,2);
+		//iDempiereConsulting __22/02/2022 -------END
 
 
 		/********************************************************************************************
@@ -720,6 +747,7 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_I_ToDo.getAD_User_ID());
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_I_ToDo.getC_ContactActivity_ID()==0? null : p_I_ToDo.getC_ContactActivity_ID());
+		map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_I_ToDo.getR_Request_ID()==0? null : p_I_ToDo.getR_Request_ID());
 		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_I_ToDo.getC_BPartner_ID()==0? null : p_I_ToDo.getC_BPartner_ID());
 		//iDempiereConsulting __26/10/2021 -------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue(p_I_ToDo.getJP_ToDo_Type());
@@ -829,8 +857,10 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 		map_Editor.get(MToDo.COLUMNNAME_Qty).setValue(p_I_ToDo.getQty());
 		map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID).setValue(p_I_ToDo.getProductTransfer_ID());
 		//iDempiereConsulting __26/10/2021 -------END
-		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(p_I_ToDo.getJP_ToDo_Status());
 		map_Editor.get(MToDo.COLUMNNAME_IsOpenToDoJP).setValue(p_I_ToDo.isOpenToDoJP());
+		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(p_I_ToDo.getJP_ToDo_Status());
+		//iDempiereConsulting __22/02/2022
+		map_Editor.get(MToDo.COLUMNNAME_IsComplete).setValue(p_I_ToDo.isComplete());
 
 		createPopup(event);
 	}
