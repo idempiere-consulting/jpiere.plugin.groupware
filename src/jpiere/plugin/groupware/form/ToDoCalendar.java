@@ -3494,26 +3494,33 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 		ToDoCalendarEvent newEvent = null;
 		if(todo.getAD_User_ID() == p_AD_User_ID)
 		{
-			oldEvent = map_ToDoCalendarEvent_User.get(todo.getAD_User_ID()).get(todo.get_ID());
-			if(oldEvent != null)
-				map_ToDoCalendarEvent_User.get(todo.getAD_User_ID()).remove(todo.get_ID());
-
-			newEvent = new ToDoCalendarEvent(todo);
-			if(isAcquiredToDoCalendarEventRange(newEvent))
-				map_ToDoCalendarEvent_User.get(todo.getAD_User_ID()).put(todo.get_ID(), newEvent);
+			//iDempiereConsulting __23/02/2022
+			if(map_ToDoCalendarEvent_User.get(todo.getAD_User_ID())!=null) {
+				oldEvent = map_ToDoCalendarEvent_User.get(todo.getAD_User_ID()).get(todo.get_ID());
+				if(oldEvent != null)
+					map_ToDoCalendarEvent_User.get(todo.getAD_User_ID()).remove(todo.get_ID());
+	
+				newEvent = new ToDoCalendarEvent(todo);
+				if(isAcquiredToDoCalendarEventRange(newEvent))
+					map_ToDoCalendarEvent_User.get(todo.getAD_User_ID()).put(todo.get_ID(), newEvent);
+			}//iDempiereConsulting __23/02/2022
 
 		}else {
-
-			oldEvent = map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID()).get(todo.get_ID());
-			if(oldEvent != null)
-				map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID()).remove(todo.get_ID());
-
-			newEvent = new ToDoCalendarEvent(todo);
-			if(isAcquiredToDoCalendarEventRange(newEvent))
-				map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID()).put(todo.get_ID(), newEvent);
+			//iDempiereConsulting __23/02/2022
+			if(map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID())!=null) {
+				oldEvent = map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID()).get(todo.get_ID());
+				if(oldEvent != null)
+					map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID()).remove(todo.get_ID());
+	
+				newEvent = new ToDoCalendarEvent(todo);
+				if(isAcquiredToDoCalendarEventRange(newEvent))
+					map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID()).put(todo.get_ID(), newEvent);
+			}//iDempiereConsulting __23/02/2022
 		}
 
-		updateCalendarEvent(oldEvent, newEvent);
+		//iDempiereConsulting __23/02/2022
+		if(map_ToDoCalendarEvent_User.get(todo.getAD_User_ID())!=null || map_ToDoCalendarEvent_Team.get(todo.getAD_User_ID())!=null)
+			updateCalendarEvent(oldEvent, newEvent);
 
 		return true;
 	}
