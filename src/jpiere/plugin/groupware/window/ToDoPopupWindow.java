@@ -278,7 +278,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			ZKUpdateUtil.setWindowHeightX(this,  SessionManager.getAppDesktop().getClientInfo().desktopHeight);
 		}else {
 			ZKUpdateUtil.setWindowWidthX(this, 478);
-			ZKUpdateUtil.setWindowHeightX(this, 632);
+			ZKUpdateUtil.setWindowHeightX(this, 682);
 		}
 
 		this.setSclass("popup-dialog request-dialog");
