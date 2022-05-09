@@ -70,11 +70,13 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 
 	public String beforeSavePreCheck(boolean newRecord)
 	{
+		//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+		boolean showAdvanced = "Y".equals(Env.getContext(getCtx(), Env.SHOW_ADVANCED));
 		//** Check User**/
 		if(!newRecord)
 		{
 			int loginUser  = Env.getAD_User_ID(getCtx());
-			if(loginUser == getAD_User_ID() || loginUser == getCreatedBy())
+			if(loginUser == getAD_User_ID() || loginUser == getCreatedBy() || showAdvanced)//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
 			{
 				;//Updatable
 
@@ -94,13 +96,13 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 
 
 		//*** Check ToDo Category ***//
-//		if(getJP_ToDo_Category_ID() != 0 && (newRecord || is_ValueChanged(MToDoTeam.COLUMNNAME_JP_ToDo_Category_ID)))
-//		{
-//			if(MToDoCategory.get(getCtx(), getJP_ToDo_Category_ID()).getAD_User_ID() != 0 && MToDoCategory.get(getCtx(), getJP_ToDo_Category_ID()).getAD_User_ID() != getAD_User_ID() )
-//			{
-//				return Msg.getMsg(getCtx(), "JP_OtherUserToDoCategory");//You can't use other user's ToDo Category.
-//			}
-//		}
+		if(getJP_ToDo_Category_ID() != 0 && (newRecord || is_ValueChanged(MToDoTeam.COLUMNNAME_JP_ToDo_Category_ID)))
+		{
+			if(MToDoCategory.get(getCtx(), getJP_ToDo_Category_ID()).getAD_User_ID() != 0 && MToDoCategory.get(getCtx(), getJP_ToDo_Category_ID()).getAD_User_ID() != getAD_User_ID() && !showAdvanced)//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+			{
+				return Msg.getMsg(getCtx(), "JP_OtherUserToDoCategory");//You can't use other user's ToDo Category.
+			}
+		}
 
 
 		//*** Check Schedule Time ***//

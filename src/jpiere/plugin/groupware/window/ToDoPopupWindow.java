@@ -244,6 +244,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	private boolean isKickedProcess = false;
 
 	private boolean mobile = false;
+	
+	//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+	private boolean showAdvanced = false;
 
 	/**
 	 * Constructor
@@ -252,6 +255,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	{
 		super();
 		mobile = ClientInfo.isMobile();
+		//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+		showAdvanced = "Y".equals(Env.getContext(Env.getCtx(), Env.SHOW_ADVANCED));
 
 		this.i_PersonalToDoPopupwindowCaller = caller;
 
@@ -385,7 +390,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 		}else {
 
-			if(p_AD_User_ID == login_User_ID || p_iToDo.getCreatedBy() == login_User_ID)
+			if(p_AD_User_ID == login_User_ID || p_iToDo.getCreatedBy() == login_User_ID || showAdvanced)//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
 			{
 				if(p_iToDo.isProcessed())
 					p_IsUpdatable = false;
@@ -401,7 +406,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		if(p_iToDo == null)
 		{
 			p_IsUpdatable_ToDoStatus = true;
-		}else if(p_AD_User_ID == login_User_ID || p_iToDo.getCreatedBy() == login_User_ID){
+		}else if(p_AD_User_ID == login_User_ID || p_iToDo.getCreatedBy() == login_User_ID|| showAdvanced){//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
 			p_IsUpdatable_ToDoStatus = true;
 		}else {
 			p_IsUpdatable_ToDoStatus = false;
