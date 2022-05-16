@@ -397,9 +397,11 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 
 	public String beforeDeletePreCheck()
 	{
+		//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+		boolean showAdvanced = "Y".equals(Env.getContext(getCtx(), Env.SHOW_ADVANCED));
 		//** Check User**/
 		int loginUser  = Env.getAD_User_ID(getCtx());
-		if(loginUser == getAD_User_ID() || loginUser == getCreatedBy())
+		if(loginUser == getAD_User_ID() || loginUser == getCreatedBy() || showAdvanced)//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
 		{
 			//Deleteable;
 

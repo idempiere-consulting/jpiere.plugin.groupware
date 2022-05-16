@@ -120,10 +120,15 @@ public class ToDoCalendarEvent extends SimpleCalendarEvent {
 	public String team_Default_Short_ContentColor = null;
 
 
+	//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+	private boolean showAdvanced = false;
+	
 	public ToDoCalendarEvent(I_ToDo toDo)
 	{
 		super();
 		this.i_ToDo = toDo;
+		//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
+		showAdvanced = "Y".equals(Env.getContext(Env.getCtx(), Env.SHOW_ADVANCED));
 
 		adjustTimeToZK();
 		adjustDisplayText();
@@ -136,7 +141,7 @@ public class ToDoCalendarEvent extends SimpleCalendarEvent {
 		}else {
 
 			int login_AD_User_ID = Env.getAD_User_ID(Env.getCtx());
-			if(toDo.getAD_User_ID() == login_AD_User_ID || i_ToDo.getCreatedBy() == login_AD_User_ID)
+			if(toDo.getAD_User_ID() == login_AD_User_ID || i_ToDo.getCreatedBy() == login_AD_User_ID || showAdvanced)//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
 				this.setLocked(false);
 			else
 				this.setLocked(true);
