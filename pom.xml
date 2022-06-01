@@ -12,6 +12,16 @@
 			<layout>p2</layout>
 			<url>file:///opt/repos/idempiere/org.idempiere.p2/target/repository/</url>
 		</repository>
+		<repository>
+			<id>contractP2</id>
+			<layout>p2</layout>
+			<url>file:///opt/repos/idempiere-ita-plugin/it.cnet.impl.contract/target/</url>
+		</repository>
+		<repository>
+			<id>iServiceP2</id>
+			<layout>p2</layout>
+			<url>file:///opt/repos/idempiere-ita-plugin/it.idIta.impl.LIT_I-Service/target/</url>
+		</repository>
 	</repositories>
 
 	<build>

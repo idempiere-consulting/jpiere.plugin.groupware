@@ -27,6 +27,9 @@ import org.compiere.model.MMessage;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_ContactActivity;
+import org.compiere.model.X_C_Project;
+import org.compiere.model.MProject;
+import org.compiere.model.MProjectType;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -530,24 +533,65 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 	private void createResourceAssignment() {
 		//Controllo per evitare doppinoni di resource assignment su stesso schedule
 		int result = DB.getSQLValueEx(null, "SELECT S_ResourceAssignment_ID FROM S_ResourceAssignment WHERE AD_Client_ID=? AND JP_ToDo_ID=?", getAD_Client_ID(), getJP_ToDo_ID());
-		if(result>0)
+		if(result>0 || (getC_Project_ID()<=0 && getC_ContactActivity_ID()<=0))
 			return;
 		/////
 		
 		MResourceAssignment resAssignment = new MResourceAssignment(getCtx(), 0, null);
-		X_C_ContactActivity cTask = new X_C_ContactActivity(getCtx(), getC_ContactActivity_ID(), null);
+		int C_Project_ID=-1;
+		int C_ContactActivity_ID = -1;
+		int AD_Org_ID = -1;
+		int M_Product_ID = -1;
+		boolean isDoNotInvoice = false;
+		int C_BPartner_ID = -1;
+		
+		if(getC_Project_ID()>0) {
+			X_C_Project cProject = new X_C_Project(getCtx(), getC_Project_ID(), null);
+			
+			C_Project_ID = getC_Project_ID();
+			AD_Org_ID = cProject.getAD_Org_ID();
+			if(cProject.get_ValueAsInt("M_Product_ID")>0)
+				M_Product_ID = cProject.get_ValueAsInt("M_Product_ID");
+				
+			if(((MProject)cProject).getC_ProjectType_ID()>0) {
+				MProjectType prjType = new MProjectType(getCtx(), ((MProject)cProject).getC_ProjectType_ID(), null);
+				isDoNotInvoice = prjType.get_ValueAsBoolean("isDoNotInvoice");
+			}
+			if(cProject.get_ValueAsInt("C_BPartner_ID")>0)
+				C_BPartner_ID = cProject.get_ValueAsInt("C_BPartner_ID");
+		}
+		else if(getC_ContactActivity_ID()>0) {
+			X_C_ContactActivity cTask = new X_C_ContactActivity(getCtx(), getC_ContactActivity_ID(), null);
+			
+			C_ContactActivity_ID = getC_ContactActivity_ID();
+			AD_Org_ID = cTask.getAD_Org_ID();
+			M_Product_ID = cTask.get_ValueAsInt("M_Product_ID");
+			isDoNotInvoice = cTask.get_ValueAsBoolean("isDoNotInvoice");
+			if(cTask.get_ValueAsInt("C_BPartner_ID")>0)
+				C_BPartner_ID = cTask.get_ValueAsInt("C_BPartner_ID");
+			
+			if(cTask.get_ValueAsInt("C_Project_ID")>0)
+				C_Project_ID = cTask.get_ValueAsInt("C_Project_ID");
+		}
+		
+		if(AD_Org_ID<=0)
+			AD_Org_ID = getAD_Org_ID();
+		resAssignment.setAD_Org_ID(AD_Org_ID);
+		if(C_Project_ID>0)
+			resAssignment.set_ValueOfColumn("C_Project_ID",C_Project_ID);
+		if(C_ContactActivity_ID>0)
+			resAssignment.set_ValueOfColumn("C_ContactActivity_ID",C_ContactActivity_ID);
+		if(M_Product_ID>0)
+			resAssignment.set_ValueOfColumn("M_Product_ID",M_Product_ID);
+		resAssignment.set_ValueOfColumn("isDoNotInvoice", isDoNotInvoice);
+		if(C_BPartner_ID<=0)
+			C_BPartner_ID = getC_BPartner_ID();
+		resAssignment.set_ValueOfColumn("C_BPartner_ID", C_BPartner_ID);
 		
 		//by pass per EventHandler plug-in resourceAttendance
 		resAssignment.setQty(BigDecimal.ZERO);
 		//////
 		resAssignment.set_ValueOfColumn("JP_ToDo_ID", getJP_ToDo_ID());
-		if(cTask.getC_ContactActivity_ID()>0) {
-			resAssignment.set_ValueOfColumn("C_ContactActivity_ID",cTask.getC_ContactActivity_ID());
-			resAssignment.setAD_Org_ID(cTask.getAD_Org_ID());
-		}
-		else
-			resAssignment.setAD_Org_ID(getAD_Org_ID());
-		
 		resAssignment.setAssignDateFrom(getJP_ToDo_ScheduledStartTime());
 
 		//per calcolo/impostazione direttamente da evento calendario di quantità ore addebitate
@@ -562,17 +606,6 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 		int resourceID = DB.getSQLValue(null, "SELECT S_Resource_ID FROM S_Resource WHERE isActive='Y' AND AD_Client_ID=? AND AD_User_ID=?", getAD_Client_ID(),getAD_User_ID());
 		resAssignment.setS_Resource_ID(resourceID);
 		
-		if(cTask.getC_ContactActivity_ID()>0) {
-			resAssignment.set_ValueOfColumn("M_Product_ID",cTask.get_ValueAsInt("M_Product_ID"));
-			resAssignment.set_ValueOfColumn("isDoNotInvoice", cTask.get_ValueAsBoolean("isDoNotInvoice"));
-		}
-		if(cTask.getC_ContactActivity_ID()>0 && cTask.get_ValueAsInt("C_BPartner_ID")>0)
-			resAssignment.set_ValueOfColumn("C_BPartner_ID", cTask.get_ValueAsInt("C_BPartner_ID"));
-		else
-			resAssignment.set_ValueOfColumn("C_BPartner_ID", getC_BPartner_ID());
-		if(cTask.getC_ContactActivity_ID()>0 && cTask.get_ValueAsInt("C_Project_ID")>0)
-			resAssignment.set_ValueOfColumn("C_Project_ID",cTask.get_ValueAsInt("C_Project_ID"));
-		
 		resAssignment.set_ValueOfColumn("Percent", new BigDecimal(100));
 		resAssignment.set_ValueOfColumn("PlannedQty", BigDecimal.ZERO);
 		//resAssignment.set_ValueOfColumn("Priority",p_priority); TODO 
@@ -582,6 +615,10 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			resAssignment.set_ValueOfColumn("ProductTransfer_ID", getProductTransfer_ID());
 		if(getR_Request_ID()>0)
 			resAssignment.set_ValueOfColumn("R_Request_ID", getR_Request_ID());
+		if(get_ValueAsInt("MP_Maintain_ID")>0)
+			resAssignment.set_ValueOfColumn("MP_Maintain_ID", get_ValueAsInt("MP_Maintain_ID"));
+		if(get_ValueAsInt("MP_OT_ID")>0)
+			resAssignment.set_ValueOfColumn("MP_OT_ID", get_ValueAsInt("MP_OT_ID"));
 		resAssignment.saveEx();
 		
 	}
@@ -660,8 +697,11 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 	public int getS_ResourceAssignment_ID() {
 		return 0;
 	}
-
-
-
+	
+	@Override
+	public void setValue(String ColumnName, Object value) {
+		super.set_Value(ColumnName, value);
+	}
+	
 
 }

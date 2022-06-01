@@ -71,10 +71,12 @@ import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRequestType;
+import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_ContactActivity;
+import org.compiere.model.X_C_Project;
 import org.compiere.model.X_R_Request;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
@@ -100,6 +102,8 @@ import org.zkoss.zul.Popup;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Timebox;
 
+import it.idIta.idempiere.LIT_I_Service.model.X_MP_Maintain;
+import it.idIta.idempiere.LIT_I_Service.model.X_MP_OT;
 import jpiere.plugin.groupware.form.ReminderMenuPopup;
 import jpiere.plugin.groupware.form.TeamMemberPopup;
 import jpiere.plugin.groupware.model.I_ToDo;
@@ -153,6 +157,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	
 	//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment + qty
 	private int p_c_contactActivity_ID = 0;
+	private int p_c_project_ID = 0;
 	private int p_r_request_ID = 0;
 	private int p_c_bpartner_ID = 0;
 	private BigDecimal p_qty = null; 
@@ -247,6 +252,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	
 	//iDempiereConsulting __09/05/2022 --- Controllo avanzato su gestione calendario TO_DO
 	private boolean showAdvanced = false;
+	// Visibilità campi : C_ContactActivity_ID (Y/N) - C_Project_ID (Y/N) - R_Request_ID (Y/N) - se presente MP_Maintain_ID (Y/N) - se presente MP_OT_ID (Y/N)
+	private String p_jpVisibity = MSysConfig.getValue("JP_TODOVisibility", "NYNNN", Env.getAD_Client_ID(Env.getCtx()));
+	private boolean existsMP_Maintain_col = MColumn.get(Env.getCtx(), "JP_ToDo","MP_Maintain_ID")!=null;
 
 	/**
 	 * Constructor
@@ -283,7 +291,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			ZKUpdateUtil.setWindowHeightX(this,  SessionManager.getAppDesktop().getClientInfo().desktopHeight);
 		}else {
 			ZKUpdateUtil.setWindowWidthX(this, 478);
-			ZKUpdateUtil.setWindowHeightX(this, 682);
+			ZKUpdateUtil.setWindowHeightX(this, 702);
 		}
 
 		this.setSclass("popup-dialog request-dialog");
@@ -449,8 +457,16 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Label.put(MToDo.COLUMNNAME_AD_User_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_AD_User_ID)) );
 		map_Label.get(MToDo.COLUMNNAME_AD_User_ID).setStyle("font-weight:bold;border-left: 4px solid #F39700;padding-left:2px;");
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
-		map_Label.put(MToDo.COLUMNNAME_C_ContactActivity_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID)) );
-		map_Label.put(MToDo.COLUMNNAME_R_Request_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_R_Request_ID)) );
+		if(p_jpVisibity.split("")[0].equals("Y"))
+			map_Label.put(MToDo.COLUMNNAME_C_ContactActivity_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID)) );
+		if(p_jpVisibity.split("")[1].equals("Y"))
+			map_Label.put(MToDo.COLUMNNAME_C_Project_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_Project_ID)) );
+		if(p_jpVisibity.split("")[2].equals("Y"))
+			map_Label.put(MToDo.COLUMNNAME_R_Request_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_R_Request_ID)) );
+		if(p_jpVisibity.split("")[3].equals("Y") && existsMP_Maintain_col)
+			map_Label.put("MP_Maintain_ID", new Label(Msg.getElement(ctx, "MP_Maintain_ID")) );
+		if(p_jpVisibity.split("")[4].equals("Y") && existsMP_Maintain_col)
+			map_Label.put("MP_OT_ID", new Label(Msg.getElement(ctx, "MP_OT_ID")) );
 		map_Label.put(MToDo.COLUMNNAME_C_BPartner_ID, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID)) );
 		//iDempiereConsulting __26/10/2021 --------END
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Type, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Type)) );
@@ -505,19 +521,45 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		//*** C_ContactActivity_ID ***//
-		MLookup lookup_C_ContactActivity_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_ContactActivity_ID),  DisplayType.Search);
-		WSearchEditor Editor_C_ContactActivity_ID = new WSearchEditor(lookup_C_ContactActivity_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID), null, true, !p_IsUpdatable, true);
-		Editor_C_ContactActivity_ID.addValueChangeListener(this);
-		ZKUpdateUtil.setHflex(Editor_C_ContactActivity_ID.getComponent(), "true");
-		map_Editor.put(MToDo.COLUMNNAME_C_ContactActivity_ID, Editor_C_ContactActivity_ID);
-		
+		if(p_jpVisibity.split("")[0].equals("Y")) {
+			MLookup lookup_C_ContactActivity_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_ContactActivity_ID),  DisplayType.Search);
+			WSearchEditor Editor_C_ContactActivity_ID = new WSearchEditor(lookup_C_ContactActivity_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_ContactActivity_ID), null, true, !p_IsUpdatable, true);
+			Editor_C_ContactActivity_ID.addValueChangeListener(this);
+			ZKUpdateUtil.setHflex(Editor_C_ContactActivity_ID.getComponent(), "true");
+			map_Editor.put(MToDo.COLUMNNAME_C_ContactActivity_ID, Editor_C_ContactActivity_ID);
+		}
+		//*** C_Project_ID ***//
+		if(p_jpVisibity.split("")[1].equals("Y")) {
+			MLookup lookup_C_Project_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_Project_ID),  DisplayType.Search);
+			WSearchEditor Editor_C_Project_ID = new WSearchEditor(lookup_C_Project_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_Project_ID), null, true, !p_IsUpdatable, true);
+			Editor_C_Project_ID.addValueChangeListener(this);
+			ZKUpdateUtil.setHflex(Editor_C_Project_ID.getComponent(), "true");
+			map_Editor.put(MToDo.COLUMNNAME_C_Project_ID, Editor_C_Project_ID);
+		}
 		//*** R_Request_ID ***//
-		MLookup lookup_R_Request_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_R_Request_ID),  DisplayType.Search);
-		WSearchEditor Editor_R_Request_ID = new WSearchEditor(lookup_R_Request_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_R_Request_ID), null, true, !p_IsUpdatable, true);
-		Editor_R_Request_ID.addValueChangeListener(this);
-		ZKUpdateUtil.setHflex(Editor_R_Request_ID.getComponent(), "true");
-		map_Editor.put(MToDo.COLUMNNAME_R_Request_ID, Editor_R_Request_ID);
-		
+		if(p_jpVisibity.split("")[2].equals("Y")) {
+			MLookup lookup_R_Request_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_R_Request_ID),  DisplayType.Search);
+			WSearchEditor Editor_R_Request_ID = new WSearchEditor(lookup_R_Request_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_R_Request_ID), null, true, !p_IsUpdatable, true);
+			Editor_R_Request_ID.addValueChangeListener(this);
+			ZKUpdateUtil.setHflex(Editor_R_Request_ID.getComponent(), "true");
+			map_Editor.put(MToDo.COLUMNNAME_R_Request_ID, Editor_R_Request_ID);
+		}
+		//*** MP_Maintain_ID ***//
+		if(p_jpVisibity.split("")[3].equals("Y") && existsMP_Maintain_col) {
+			MLookup lookup_MP_Maintain_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, "MP_Maintain_ID"),  DisplayType.Search);
+			WSearchEditor Editor_MP_Maintain_ID = new WSearchEditor(lookup_MP_Maintain_ID, Msg.getElement(ctx, "MP_Maintain_ID"), null, true, !p_IsUpdatable, true);
+			Editor_MP_Maintain_ID.addValueChangeListener(this);
+			ZKUpdateUtil.setHflex(Editor_MP_Maintain_ID.getComponent(), "true");
+			map_Editor.put("MP_Maintain_ID", Editor_MP_Maintain_ID);
+		}
+		//*** MP_OT_ID ***//
+		if(p_jpVisibity.split("")[4].equals("Y") && existsMP_Maintain_col) {
+			MLookup lookup_MP_OT_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, "MP_OT_ID"),  DisplayType.Search);
+			WSearchEditor Editor_MP_OT_ID = new WSearchEditor(lookup_MP_OT_ID, Msg.getElement(ctx, "MP_OT_ID"), null, true, !p_IsUpdatable, true);
+			Editor_MP_OT_ID.addValueChangeListener(this);
+			ZKUpdateUtil.setHflex(Editor_MP_OT_ID.getComponent(), "true");
+			map_Editor.put("MP_OT_ID", Editor_MP_OT_ID);
+		}
 		//*** C_BPartner_ID ***//
 		MLookup lookup_C_BPartner_ID = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_C_BPartner_ID),  DisplayType.Search);
 		WSearchEditor Editor_C_BPartner_ID = new WSearchEditor(lookup_C_BPartner_ID, Msg.getElement(ctx, MToDo.COLUMNNAME_C_BPartner_ID), null, true, !p_IsUpdatable, true);
@@ -727,8 +769,16 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
-		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
-		map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		if(p_jpVisibity.split("")[0].equals("Y"))
+			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		if(p_jpVisibity.split("")[1].equals("Y"))
+			map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		if(p_jpVisibity.split("")[2].equals("Y"))
+			map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		if(p_jpVisibity.split("")[3].equals("Y") && existsMP_Maintain_col)
+			map_Editor.get("MP_Maintain_ID").setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		if(p_jpVisibity.split("")[4].equals("Y") && existsMP_Maintain_col)
+			map_Editor.get("MP_OT_ID").setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 		//iDempiereConsulting __26/10/2021 ------END
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Category_ID).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
@@ -780,8 +830,16 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(Env.getAD_Org_ID(ctx));
 			map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_AD_User_ID);
 			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
-			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_c_contactActivity_ID==0? null : p_c_contactActivity_ID);
-			map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_r_request_ID==0? null : p_r_request_ID);
+			if(p_jpVisibity.split("")[0].equals("Y"))
+				map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_c_contactActivity_ID==0? null : p_c_contactActivity_ID);
+			if(p_jpVisibity.split("")[1].equals("Y"))
+				map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).setValue(p_c_project_ID==0? null : p_c_project_ID);
+			if(p_jpVisibity.split("")[2].equals("Y"))
+				map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_r_request_ID==0? null : p_r_request_ID);
+			if(p_jpVisibity.split("")[3].equals("Y") && existsMP_Maintain_col)
+				map_Editor.get("MP_Maintain_ID").setValue(p_r_request_ID==0? null : p_r_request_ID);
+			if(p_jpVisibity.split("")[4].equals("Y") && existsMP_Maintain_col)
+				map_Editor.get("MP_OT_ID").setValue(p_r_request_ID==0? null : p_r_request_ID);
 			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_c_bpartner_ID==0? null : p_c_bpartner_ID);
 			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue(p_JP_ToDo_Type);
@@ -806,8 +864,16 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_AD_Org_ID).setValue(p_iToDo.getAD_Org_ID());
 			map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(p_AD_User_ID);
 			//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
-			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_iToDo.getC_ContactActivity_ID()==0? null : p_iToDo.getC_ContactActivity_ID());
-			map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_iToDo.getR_Request_ID()==0? null : p_iToDo.getR_Request_ID());
+			if(p_jpVisibity.split("")[0].equals("Y"))
+				map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_iToDo.getC_ContactActivity_ID()==0? null : p_iToDo.getC_ContactActivity_ID());
+			if(p_jpVisibity.split("")[1].equals("Y"))
+				map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).setValue(p_iToDo.getC_Project_ID()==0? null : p_iToDo.getC_Project_ID());
+			if(p_jpVisibity.split("")[2].equals("Y"))
+				map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_iToDo.getR_Request_ID()==0? null : p_iToDo.getR_Request_ID());
+			if(p_jpVisibity.split("")[3].equals("Y") && existsMP_Maintain_col && p_iToDo.get_Value("MP_Maintain_ID")!=null)
+				map_Editor.get("MP_Maintain_ID").setValue(((Integer)p_iToDo.get_Value("MP_Maintain_ID")).intValue()==0? null : p_iToDo.get_Value("MP_Maintain_ID"));
+			if(p_jpVisibity.split("")[4].equals("Y") && existsMP_Maintain_col && p_iToDo.get_Value("MP_OT_ID")!=null)
+				map_Editor.get("MP_OT_ID").setValue(((Integer)p_iToDo.get_Value("MP_OT_ID")).intValue()==0? null : p_iToDo.get_Value("MP_OT_ID"));
 			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_iToDo.getC_BPartner_ID()==0? null : p_iToDo.getC_BPartner_ID());
 			//iDempiereConsulting __26/10/2021 -------END
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue(p_iToDo.getJP_ToDo_Type());
@@ -1247,18 +1313,49 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		//*** C_ContactActivity_ID ***//
-		row = rows.newRow();
-		rows.appendChild(row);
-		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_ContactActivity_ID), true),2);
-		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).getComponent(),4);
-		map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).showMenu();
+		if(p_jpVisibity.split("")[0].equals("Y")) {
+			row = rows.newRow();
+			rows.appendChild(row);
+			row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_ContactActivity_ID), true),2);
+			row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).getComponent(),4);
+			map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).showMenu();
+		}
+		
+		//*** C_Project_ID ***//
+		if(p_jpVisibity.split("")[1].equals("Y")) {
+			row = rows.newRow();
+			rows.appendChild(row);
+			row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_C_Project_ID), true),2);
+			row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).getComponent(),4);
+			map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).showMenu();
+		}
 		
 		//*** R_Request_ID ***//
-		row = rows.newRow();
-		rows.appendChild(row);
-		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_R_Request_ID), true),2);
-		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).getComponent(),4);
-		map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).showMenu();
+		if(p_jpVisibity.split("")[2].equals("Y")) {
+			row = rows.newRow();
+			rows.appendChild(row);
+			row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_R_Request_ID), true),2);
+			row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).getComponent(),4);
+			map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).showMenu();
+		}
+
+		//*** MP_Maintain_ID ***//
+		if(p_jpVisibity.split("")[3].equals("Y") && existsMP_Maintain_col) {
+			row = rows.newRow();
+			rows.appendChild(row);
+			row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get("MP_Maintain_ID"), true),2);
+			row.appendCellChild(map_Editor.get("MP_Maintain_ID").getComponent(),4);
+			map_Editor.get("MP_Maintain_ID").showMenu();
+		}
+		
+		//*** MP_OT_ID ***//
+		if(p_jpVisibity.split("")[4].equals("Y") && existsMP_Maintain_col) {
+			row = rows.newRow();
+			rows.appendChild(row);
+			row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get("MP_OT_ID"), true),2);
+			row.appendCellChild(map_Editor.get("MP_OT_ID").getComponent(),4);
+			map_Editor.get("MP_OT_ID").showMenu();
+		}
 		
 		//*** C_BPartner_ID ***//
 		row = rows.newRow();
@@ -1968,7 +2065,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_iToDo.setIsActive(db_ToDo.isActive());
 				//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 				p_iToDo.setC_ContactActivity_ID (db_ToDo.getC_ContactActivity_ID());
+				p_iToDo.setC_Project_ID (db_ToDo.getC_Project_ID());
 				p_iToDo.setR_Request_ID(db_ToDo.getR_Request_ID());
+				p_iToDo.setValue("MP_Maintain_ID", db_ToDo.get_Value("MP_Maintain_ID"));
+				p_iToDo.setValue("MP_OT_ID", db_ToDo.get_Value("MP_OT_ID"));
 				p_iToDo.setC_BPartner_ID (db_ToDo.getC_BPartner_ID ());
 				p_iToDo.setPercent (db_ToDo.getPercent());
 				p_iToDo.setPriority (db_ToDo.getPriority());
@@ -2327,25 +2427,65 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		}
 		//iDempiereConsulting __26/10/2021 --- Gestione S_ResourceAssignment
 		//Check C_ContactActivity_ID
-		editor = map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID);
-		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
-		{
-			p_iToDo.setC_ContactActivity_ID (-1);
-		}else {
-			p_iToDo.setC_ContactActivity_ID ((Integer)editor.getValue());
+		if(p_jpVisibity.split("")[0].equals("Y")) {
+			editor = map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID);
+			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			{
+				p_iToDo.setC_ContactActivity_ID (-1);
+			}else {
+				p_iToDo.setC_ContactActivity_ID ((Integer)editor.getValue());
+			}
+			valueChangeFieldMap.put(MToDo.COLUMNNAME_C_ContactActivity_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_C_ContactActivity_ID));
 		}
-		valueChangeFieldMap.put(MToDo.COLUMNNAME_C_ContactActivity_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_C_ContactActivity_ID));
+		
+		//Check C_Project_ID
+		if(p_jpVisibity.split("")[1].equals("Y")) {
+			editor = map_Editor.get(MToDo.COLUMNNAME_C_Project_ID);
+			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			{
+				p_iToDo.setC_Project_ID(-1);
+			}else {
+				p_iToDo.setC_Project_ID ((Integer)editor.getValue());
+			}
+			valueChangeFieldMap.put(MToDo.COLUMNNAME_C_Project_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_C_Project_ID));
+		}
 		
 		//Check R_Request_ID
-		editor = map_Editor.get(MToDo.COLUMNNAME_R_Request_ID);
-		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
-		{
-			p_iToDo.setR_Request_ID(-1);
-		}else {
-			p_iToDo.setR_Request_ID ((Integer)editor.getValue());
+		if(p_jpVisibity.split("")[2].equals("Y")) {
+			editor = map_Editor.get(MToDo.COLUMNNAME_R_Request_ID);
+			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			{
+				p_iToDo.setR_Request_ID(-1);
+			}else {
+				p_iToDo.setR_Request_ID ((Integer)editor.getValue());
+			}
+			valueChangeFieldMap.put(MToDo.COLUMNNAME_R_Request_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_R_Request_ID));
 		}
-		valueChangeFieldMap.put(MToDo.COLUMNNAME_R_Request_ID, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_R_Request_ID));
-			
+		
+		//Check MP_Maintain_ID
+		if(p_jpVisibity.split("")[3].equals("Y")) {
+			editor = map_Editor.get("MP_Maintain_ID");
+			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			{
+				p_iToDo.setValue("MP_Maintain_ID",-1);
+			}else {
+				p_iToDo.setValue("MP_Maintain_ID",(Integer)editor.getValue());
+			}
+			valueChangeFieldMap.put("MP_Maintain_ID", p_iToDo.is_ValueChanged("MP_Maintain_ID"));
+		}
+
+		//Check MP_OT_ID
+		if(p_jpVisibity.split("")[4].equals("Y")) {
+			editor = map_Editor.get("MP_OT_ID");
+			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			{
+				p_iToDo.setValue("MP_OT_ID",-1);
+			}else {
+				p_iToDo.setValue("MP_OT_ID",(Integer)editor.getValue());
+			}
+			valueChangeFieldMap.put("MP_OT_ID", p_iToDo.is_ValueChanged("MP_OT_ID"));
+		}
+
 		//Check C_BPartner_ID
 		editor = map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID);
 		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
@@ -3157,6 +3297,60 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
 				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cTask.getDescription());
 			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cTask.get_ValueAsInt("C_BPartner_ID"));
+			
+		}
+		else if(MToDo.COLUMNNAME_C_Project_ID.equals(name)) {
+			if(value==null)
+				return;
+			int project_ID = (Integer)value;
+			X_C_Project cProject = new X_C_Project(ctx, project_ID, null);
+			if(map_Editor.get(MToDo.COLUMNNAME_Name).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Name).getValue()).isEmpty()) {
+				String strNAME = "";
+				if(cProject.get_ValueAsString("DocumentNo")!=null && !cProject.get_ValueAsString("DocumentNo").isEmpty())
+					strNAME = cProject.get_ValueAsString("DocumentNo");
+				if(cProject.get_ValueAsString("Name")!=null && !cProject.get_ValueAsString("Name").isEmpty())
+					strNAME = ((!strNAME.isEmpty())?(strNAME+"-"):"").concat(cProject.get_ValueAsString("Name"));
+				map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
+			}
+			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
+				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cProject.getDescription());
+			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cProject.get_ValueAsInt("C_BPartner_ID"));
+			
+		}
+		else if("MP_Maintain_ID".equals(name)) {
+			if(value==null)
+				return;
+			int maintain_ID = (Integer)value;
+			X_MP_Maintain  mpMaintain = new X_MP_Maintain(ctx, maintain_ID, null);
+			if(map_Editor.get(MToDo.COLUMNNAME_Name).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Name).getValue()).isEmpty()) {
+				String strNAME = "";
+				if(mpMaintain.get_ValueAsString("DocumentNo")!=null && !mpMaintain.get_ValueAsString("DocumentNo").isEmpty())
+					strNAME = mpMaintain.get_ValueAsString("DocumentNo");
+				if(mpMaintain.get_ValueAsString("Name")!=null && !mpMaintain.get_ValueAsString("Name").isEmpty())
+					strNAME = ((!strNAME.isEmpty())?(strNAME+"-"):"").concat(mpMaintain.get_ValueAsString("Name"));
+				map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
+			}
+			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
+				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(mpMaintain.getDescription());
+			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(mpMaintain.get_ValueAsInt("C_BPartner_ID"));
+			
+		}
+		else if("MP_OT_ID".equals(name)) {
+			if(value==null)
+				return;
+			int ot_ID = (Integer)value;
+			X_MP_OT  mpOT = new X_MP_OT(ctx, ot_ID, null);
+			if(map_Editor.get(MToDo.COLUMNNAME_Name).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Name).getValue()).isEmpty()) {
+				String strNAME = "";
+				if(mpOT.get_ValueAsString("DocumentNo")!=null && !mpOT.get_ValueAsString("DocumentNo").isEmpty())
+					strNAME = mpOT.get_ValueAsString("DocumentNo");
+				if(mpOT.get_ValueAsString("Name")!=null && !mpOT.get_ValueAsString("Name").isEmpty())
+					strNAME = ((!strNAME.isEmpty())?(strNAME+"-"):"").concat(mpOT.get_ValueAsString("Name"));
+				map_Editor.get(MToDo.COLUMNNAME_Name).setValue(strNAME);
+			}
+			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
+				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(mpOT.getDescription());
+			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(mpOT.get_ValueAsInt("C_BPartner_ID"));
 			
 		}
 		else if(MToDo.COLUMNNAME_R_Request_ID.equals(name)) {

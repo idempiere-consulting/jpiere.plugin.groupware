@@ -21,4 +21,5 @@ Require-Bundle: org.adempiere.base;bundle-version="7.1.0",
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Import-Package: org.osgi.service.event
+Import-Package: it.idIta.idempiere.LIT_I_Service.model;resolution:=optional,
+ org.osgi.service.event

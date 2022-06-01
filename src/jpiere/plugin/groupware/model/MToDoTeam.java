@@ -780,5 +780,9 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 		return false;
 	}
 
+	@Override
+	public void setValue(String ColumnName, Object value) {
+		super.set_Value(ColumnName, value);
+	}
 	
 }

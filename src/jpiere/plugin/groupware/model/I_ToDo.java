@@ -32,6 +32,7 @@ public interface I_ToDo
 	public int get_ID();
 
 	public Object get_Value(String columnName);
+	public void setValue(String ColumnName, Object value);
 
 
 	/**JP_ToDo_ID**/
@@ -217,6 +218,10 @@ public interface I_ToDo
 	/** C_ContactActivity_ID **/
 	public void setC_ContactActivity_ID (int C_ContactActivity_ID);
 	public int getC_ContactActivity_ID ();
+	
+	/** C_Project_ID **/
+	public void setC_Project_ID (int C_Project_ID);
+	public int getC_Project_ID ();
 	
 	/** R_Request_ID **/
 	public void setR_Request_ID (int R_Request_ID);
