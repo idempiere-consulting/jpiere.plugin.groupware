@@ -2431,7 +2431,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			editor = map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID);
 			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
-				p_iToDo.setC_ContactActivity_ID (-1);
+				///p_iToDo.setC_ContactActivity_ID (-1);
 			}else {
 				p_iToDo.setC_ContactActivity_ID ((Integer)editor.getValue());
 			}
@@ -2443,7 +2443,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			editor = map_Editor.get(MToDo.COLUMNNAME_C_Project_ID);
 			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
-				p_iToDo.setC_Project_ID(-1);
+				///p_iToDo.setC_Project_ID(-1);
 			}else {
 				p_iToDo.setC_Project_ID ((Integer)editor.getValue());
 			}
@@ -2455,7 +2455,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			editor = map_Editor.get(MToDo.COLUMNNAME_R_Request_ID);
 			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
-				p_iToDo.setR_Request_ID(-1);
+				///p_iToDo.setR_Request_ID(-1);
 			}else {
 				p_iToDo.setR_Request_ID ((Integer)editor.getValue());
 			}
@@ -2467,7 +2467,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			editor = map_Editor.get("MP_Maintain_ID");
 			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
-				p_iToDo.setValue("MP_Maintain_ID",-1);
+				///p_iToDo.setValue("MP_Maintain_ID",-1);
 			}else {
 				p_iToDo.setValue("MP_Maintain_ID",(Integer)editor.getValue());
 			}
@@ -2479,7 +2479,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			editor = map_Editor.get("MP_OT_ID");
 			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
-				p_iToDo.setValue("MP_OT_ID",-1);
+				///p_iToDo.setValue("MP_OT_ID",-1);
 			}else {
 				p_iToDo.setValue("MP_OT_ID",(Integer)editor.getValue());
 			}
@@ -2510,7 +2510,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		editor = map_Editor.get(MToDo.COLUMNNAME_ProductTransfer_ID);
 		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 		{
-			p_iToDo.setProductTransfer_ID(-1);
+			///p_iToDo.setProductTransfer_ID(-1);
 
 		}else {
 			p_iToDo.setProductTransfer_ID((Integer)editor.getValue());
