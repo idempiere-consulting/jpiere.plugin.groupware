@@ -553,8 +553,8 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			if(cProject.get_ValueAsInt("M_Product_ID")>0)
 				M_Product_ID = cProject.get_ValueAsInt("M_Product_ID");
 				
-			if(((MProject)cProject).getC_ProjectType_ID()>0) {
-				MProjectType prjType = new MProjectType(getCtx(), ((MProject)cProject).getC_ProjectType_ID(), null);
+			if(cProject.getC_ProjectType_ID()>0) {
+				MProjectType prjType = new MProjectType(getCtx(), cProject.getC_ProjectType_ID(), null);
 				isDoNotInvoice = prjType.get_ValueAsBoolean("isDoNotInvoice");
 			}
 			if(cProject.get_ValueAsInt("C_BPartner_ID")>0)
