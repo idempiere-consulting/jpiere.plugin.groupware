@@ -2465,7 +2465,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		//Check MP_Maintain_ID
 		if(p_jpVisibity.split("")[3].equals("Y")) {
 			editor = map_Editor.get("MP_Maintain_ID");
-			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			if(editor == null || editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
 				///p_iToDo.setValue("MP_Maintain_ID",-1);
 			}else {
@@ -2477,7 +2477,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		//Check MP_OT_ID
 		if(p_jpVisibity.split("")[4].equals("Y")) {
 			editor = map_Editor.get("MP_OT_ID");
-			if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
+			if(editor == null || editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 			{
 				///p_iToDo.setValue("MP_OT_ID",-1);
 			}else {
