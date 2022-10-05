@@ -2174,7 +2174,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		editor = map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Category_ID);
 		if(editor.getValue() == null || ((Integer)editor.getValue()).intValue() == 0)
 		{
-			;
+			p_iToDo.setJP_ToDo_Category_ID(-1);
 		}else {
 			p_iToDo.setJP_ToDo_Category_ID((Integer)editor.getValue());
 		}
