@@ -714,11 +714,6 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		ZKUpdateUtil.setHflex(editor_JP_ToDo_Status.getComponent(), "true");
 		map_Editor.put(MToDo.COLUMNNAME_JP_ToDo_Status, editor_JP_ToDo_Status);
 
-		//*** IsOpenToDoJP ***//
-		WYesNoEditor editor_IsOpenToDoJP = new WYesNoEditor(MToDo.COLUMNNAME_IsOpenToDoJP, Msg.getElement(ctx, MToDo.COLUMNNAME_IsOpenToDoJP), null, true, !p_IsUpdatable, true);
-		//editor_IsOpenToDoJP.addValueChangeListener(this);
-		map_Editor.put(MToDo.COLUMNNAME_IsOpenToDoJP, editor_IsOpenToDoJP);
-
 		//iDempiereConsulting __22/02/2022 ---
 		//*** IsComplete ***//
 		WYesNoEditor editor_IsComplete = new WYesNoEditor(MToDo.COLUMNNAME_IsComplete, Msg.getElement(ctx, MToDo.COLUMNNAME_IsComplete), null, true, !p_IsUpdatable, true);
