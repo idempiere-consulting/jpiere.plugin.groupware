@@ -1592,14 +1592,14 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					map_Calendars.get(p_SelectedTab_AD_User_ID).previousPage();
 
 					updateDateLabel();
-					getToDoCalendarEvent(false, false);
+					getToDoCalendarEvent(true ,true);//iDempiereConsulting __05/05/2023 ---
 
 				}else if(BUTTON_NEXT.equals(btnName)){
 
 					map_Calendars.get(p_SelectedTab_AD_User_ID).nextPage();
 
 					updateDateLabel();
-					getToDoCalendarEvent(false ,false);
+					getToDoCalendarEvent(true ,true);//iDempiereConsulting __05/05/2023 ---
 
 				}else if(BUTTON_REFRESH.equals(btnName)){
 
@@ -1629,14 +1629,14 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					map_Calendars.get(p_SelectedTab_AD_User_ID).setCurrentDate(Calendar.getInstance(map_Calendars.get(p_SelectedTab_AD_User_ID).getDefaultTimeZone()).getTime());
 
 					updateDateLabel();
-					getToDoCalendarEvent(false ,false);
+					getToDoCalendarEvent(true ,true);//iDempiereConsulting __05/05/2023 ---
 
 				}else if(GroupwareToDoUtil.CALENDAR_ONEDAY_VIEW.equals(btnName)){
 
 					p_CalendarMold = GroupwareToDoUtil.CALENDAR_ONEDAY_VIEW;
 					setCalendarMold(1);
 					updateDateLabel();
-					getToDoCalendarEvent(false ,false);
+					getToDoCalendarEvent(true ,true);//iDempiereConsulting __05/05/2023 ---
 
 				}else if(GroupwareToDoUtil.CALENDAR_FIVEDAYS_VIEW.equals(btnName)){
 
@@ -1644,7 +1644,7 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					setCalendarMold(5);
 
 					updateDateLabel();
-					getToDoCalendarEvent(false ,false);
+					getToDoCalendarEvent(true ,true);//iDempiereConsulting __05/05/2023 ---
 
 				}else if(GroupwareToDoUtil.CALENDAR_SEVENDAYS_VIEW.equals(btnName)){
 
@@ -1652,7 +1652,7 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					setCalendarMold(7);
 
 					updateDateLabel();
-					getToDoCalendarEvent(false ,false);
+					getToDoCalendarEvent(true ,true);//iDempiereConsulting __05/05/2023 ---
 
 				}else if(GroupwareToDoUtil.CALENDAR_MONTH_VIEW.equals(btnName)){
 
@@ -3300,14 +3300,21 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 			{
 				if(event.isShortTime)
 				{
+					//iDempiereConsulting __05/05/2023 --- Per visualizzazione mensile degli eventi completati, per adesso unica soluzione con vecchia libreria 'calendar'. FUNZIONA!!
+					String status = event.getToDo().getJP_ToDo_Status();
+					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(status) || MToDo.JP_TODO_STATUS_Completed.equals(status)) {
+						Timestamp lll = new Timestamp(event.getEndDate().getTime()) ;
+						event.setEndDate(Timestamp.valueOf(LocalDateTime.of(lll.toLocalDateTime().toLocalDate(), LocalTime.MAX)));
+					}
+					//iDempiereConsulting __05/05/2023 ------END 
 					event.setTitle(event.team_Month_Short_Title);
 					event.setContent(event.team_Month_Short_Content);
 					event.setHeaderColor(event.team_Month_Short_HeaderColor);
 					event.setContentColor(event.team_Month_Short_ContentColor);
 					//iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress
-					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(event.getToDo().getJP_ToDo_Status()))
+					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(status))
 						event.setContentColor("#3399ff");
-					else if(MToDo.JP_TODO_STATUS_Completed.equals(event.getToDo().getJP_ToDo_Status()))
+					else if(MToDo.JP_TODO_STATUS_Completed.equals(status))
 						 event.setContentColor("#666666");
 
 				}else if(event.isMiddleTime) {
@@ -3363,14 +3370,21 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 			{
 				if(event.isShortTime)
 				{
+					//iDempiereConsulting __05/05/2023 --- Per visualizzazione mensile degli eventi completati, per adesso unica soluzione con vecchia libreria 'calendar'. FUNZIONA!!
+					String status = event.getToDo().getJP_ToDo_Status();
+					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(status) || MToDo.JP_TODO_STATUS_Completed.equals(status)) {
+						Timestamp lll = new Timestamp(event.getEndDate().getTime()) ;
+						event.setEndDate(Timestamp.valueOf(LocalDateTime.of(lll.toLocalDateTime().toLocalDate(), LocalTime.MAX)));
+					}
+					//iDempiereConsulting __05/05/2023 ------END 
 					event.setTitle(event.personal_Month_Short_Title);
 					event.setContent(event.personal_Month_Short_Content);
 					event.setHeaderColor(event.personal_Month_Short_HeaderColor);
 					event.setContentColor(event.personal_Month_Short_ContentColor);
 					//iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress
-					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(event.getToDo().getJP_ToDo_Status()))
+					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(status))
 						event.setContentColor("#3399ff");
-					else if(MToDo.JP_TODO_STATUS_Completed.equals(event.getToDo().getJP_ToDo_Status()))
+					else if(MToDo.JP_TODO_STATUS_Completed.equals(status))
 						 event.setContentColor("#666666");
 
 				}else if(event.isMiddleTime) {
@@ -3379,6 +3393,11 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					event.setContent(event.personal_Month_Middle_Content);
 					event.setHeaderColor(event.personal_Month_Middle_HeaderColor);
 					event.setContentColor(event.personal_Month_Middle_ContentColor);
+					//iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress
+					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(event.getToDo().getJP_ToDo_Status()))
+						event.setContentColor("#3399ff");
+					else if(MToDo.JP_TODO_STATUS_Completed.equals(event.getToDo().getJP_ToDo_Status()))
+						 event.setContentColor("#666666");
 
 				}else {
 
@@ -3408,6 +3427,11 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					event.setContent(event.personal_Default_Middle_Content);
 					event.setHeaderColor(event.personal_Default_Middle_HeaderColor);
 					event.setContentColor(event.personal_Default_Middle_ContentColor);
+					//iDempiereConsulting __28/10/2021 --- Gestione S_ResourceAssignment/Eventi calendario completati/work in progress
+					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(event.getToDo().getJP_ToDo_Status()))
+						event.setContentColor("#3399ff");
+					else if(MToDo.JP_TODO_STATUS_Completed.equals(event.getToDo().getJP_ToDo_Status()))
+						 event.setContentColor("#666666");
 
 				}else {
 
