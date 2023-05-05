@@ -3305,6 +3305,9 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(status) || MToDo.JP_TODO_STATUS_Completed.equals(status)) {
 						Timestamp lll = new Timestamp(event.getEndDate().getTime()) ;
 						event.setEndDate(Timestamp.valueOf(LocalDateTime.of(lll.toLocalDateTime().toLocalDate(), LocalTime.MAX)));
+						lll = new Timestamp(event.getBeginDate().getTime()) ;
+						event.setBeginDate(Timestamp.valueOf(LocalDateTime.of(lll.toLocalDateTime().toLocalDate(), LocalTime.MIN)));
+						
 					}
 					//iDempiereConsulting __05/05/2023 ------END 
 					event.setTitle(event.team_Month_Short_Title);
@@ -3375,6 +3378,8 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 					if(MToDo.JP_TODO_STATUS_WorkInProgress.equals(status) || MToDo.JP_TODO_STATUS_Completed.equals(status)) {
 						Timestamp lll = new Timestamp(event.getEndDate().getTime()) ;
 						event.setEndDate(Timestamp.valueOf(LocalDateTime.of(lll.toLocalDateTime().toLocalDate(), LocalTime.MAX)));
+						lll = new Timestamp(event.getBeginDate().getTime()) ;
+						event.setBeginDate(Timestamp.valueOf(LocalDateTime.of(lll.toLocalDateTime().toLocalDate(), LocalTime.MIN)));
 					}
 					//iDempiereConsulting __05/05/2023 ------END 
 					event.setTitle(event.personal_Month_Short_Title);
