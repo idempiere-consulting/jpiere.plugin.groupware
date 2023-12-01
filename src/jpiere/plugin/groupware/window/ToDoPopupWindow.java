@@ -3536,4 +3536,13 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	}
 	//iDempiereConsulting __08/11/2021 ---------END
 	
+	//iDempiereConsulting __30/11/2023 --- Per processo di creazione evento calendario (jpiere.plugin.groupware.process.CreateToDoForRequest)
+	public void setValueForRequest(int requestID) {
+		if(p_jpVisibity.split("")[2].equals("Y")) {
+			map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(requestID);
+			p_r_request_ID = requestID;
+			((WSearchEditor)map_Editor.get(MToDo.COLUMNNAME_R_Request_ID)).valueChange(new ValueChangeEvent(map_Editor.get(MToDo.COLUMNNAME_R_Request_ID), "Change", null, requestID));
+		}
+	}
+	
 }
