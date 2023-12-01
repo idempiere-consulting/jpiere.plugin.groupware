@@ -253,6 +253,8 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 
 
 	private boolean mobile = false;
+	
+	private int calendarForRequest = -1;
 
 	/**
 	 * Constructor
@@ -1835,6 +1837,9 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 				todoWindow.addToDoCalenderEventReceiver(teamToDoGadget_Schedule);
 				todoWindow.addToDoCalenderEventReceiver(teamToDoGadget_Task);
 				todoWindow.addToDoCalenderEventReceiver(teamToDoGadget_Memo);
+				//iDempiereConsulting __30/11/2023 --- Per processo di creazione evento calendario (jpiere.plugin.groupware.process.CreateToDoForRequest)
+				if(calendarForRequest>0)
+					todoWindow.setValueForRequest(calendarForRequest);
 
 				SessionManager.getAppDesktop().showWindow(todoWindow);
 			}
@@ -3768,5 +3773,16 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 		return p_JP_ToDo_Calendar;
 	}
 
+	//iDempiereConsulting __30/11/2023 --- Per processo di creazione evento calendario (jpiere.plugin.groupware.process.CreateToDoForRequest)
+	public void setRequestforCalendar(int requestID) {
+		calendarForRequest = requestID;
+	/*	APERTURA AUTOMATICA, lasciare NON CANCELLARE
+		ToDoPopupWindow todoWindow = new ToDoPopupWindow(this, -1);
+		todoWindow.addToDoCalenderEventReceiver(this);
+		todoWindow.setValueForRequest(requestID);
+		
+		SessionManager.getAppDesktop().showWindow(todoWindow);
+	*/
+	}
 
 }
