@@ -32,7 +32,7 @@ public interface I_JP_ToDo
     /** TableName=JP_ToDo */
     public static final String Table_Name = "JP_ToDo";
 
-    /** AD_Table_ID=1000273 */
+    /** AD_Table_ID=1000161 */
     public static final int Table_ID = MTable.getTable_ID(Table_Name);
 
     KeyNamePair Model = new KeyNamePair(Table_ID, Table_Name);
@@ -78,6 +78,21 @@ public interface I_JP_ToDo
 	public int getAD_Table_ID();
 
 	public org.compiere.model.I_AD_Table getAD_Table() throws RuntimeException;
+
+    /** Column name AD_User2_ID */
+    public static final String COLUMNNAME_AD_User2_ID = "AD_User2_ID";
+
+	/** Set User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public void setAD_User2_ID (int AD_User2_ID);
+
+	/** Get User/Contact.
+	  * User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User2_ID();
+
+	public org.compiere.model.I_AD_User getAD_User2() throws RuntimeException;
 
     /** Column name AD_User_ID */
     public static final String COLUMNNAME_AD_User_ID = "AD_User_ID";
@@ -223,6 +238,15 @@ public interface I_JP_ToDo
 	  * The record is active in the system
 	  */
 	public boolean isActive();
+
+    /** Column name IsChild */
+    public static final String COLUMNNAME_IsChild = "IsChild";
+
+	/** Set IsChild	  */
+	public void setIsChild (boolean IsChild);
+
+	/** Get IsChild	  */
+	public boolean isChild();
 
     /** Column name IsComplete */
     public static final String COLUMNNAME_IsComplete = "IsComplete";
@@ -432,26 +456,6 @@ public interface I_JP_ToDo
 	/** Get JP_ToDo_UU	  */
 	public String getJP_ToDo_UU();
 
-    /** Column name LIT_Ad_User_Lead_ID */
-    public static final String COLUMNNAME_LIT_Ad_User_Lead_ID = "LIT_Ad_User_Lead_ID";
-
-	/** Set Lead ID	  */
-	public void setLIT_Ad_User_Lead_ID (int LIT_Ad_User_Lead_ID);
-
-	/** Get Lead ID	  */
-	public int getLIT_Ad_User_Lead_ID();
-
-	public org.compiere.model.I_AD_User getLIT_Ad_User_Lead() throws RuntimeException;
-
-    /** Column name LIT_ERPObjectTask_ID */
-    public static final String COLUMNNAME_LIT_ERPObjectTask_ID = "LIT_ERPObjectTask_ID";
-
-	/** Set ERP Object Task	  */
-	public void setLIT_ERPObjectTask_ID (int LIT_ERPObjectTask_ID);
-
-	/** Get ERP Object Task	  */
-	public int getLIT_ERPObjectTask_ID();
-
     /** Column name Name */
     public static final String COLUMNNAME_Name = "Name";
 
@@ -528,6 +532,15 @@ public interface I_JP_ToDo
 	  */
 	public BigDecimal getQty();
 
+    /** Column name RecipientTo */
+    public static final String COLUMNNAME_RecipientTo = "RecipientTo";
+
+	/** Set To	  */
+	public void setRecipientTo (String RecipientTo);
+
+	/** Get To	  */
+	public String getRecipientTo();
+
     /** Column name Record_ID */
     public static final String COLUMNNAME_Record_ID = "Record_ID";
 
@@ -555,6 +568,63 @@ public interface I_JP_ToDo
 	public int getR_Request_ID();
 
 	public org.compiere.model.I_R_Request getR_Request() throws RuntimeException;
+
+    /** Column name SendIt */
+    public static final String COLUMNNAME_SendIt = "SendIt";
+
+	/** Set Send	  */
+	public void setSendIt (boolean SendIt);
+
+	/** Get Send	  */
+	public boolean isSendIt();
+
+    /** Column name Sequence */
+    public static final String COLUMNNAME_Sequence = "Sequence";
+
+	/** Set Sequence	  */
+	public void setSequence (BigDecimal Sequence);
+
+	/** Get Sequence	  */
+	public BigDecimal getSequence();
+
+    /** Column name Source_UUID */
+    public static final String COLUMNNAME_Source_UUID = "Source_UUID";
+
+	/** Set Source UUID.
+	  * UUID from the source client
+	  */
+	public void setSource_UUID (String Source_UUID);
+
+	/** Get Source UUID.
+	  * UUID from the source client
+	  */
+	public String getSource_UUID();
+
+    /** Column name TimeSlotEnd */
+    public static final String COLUMNNAME_TimeSlotEnd = "TimeSlotEnd";
+
+	/** Set Slot End.
+	  * Time when timeslot ends
+	  */
+	public void setTimeSlotEnd (Timestamp TimeSlotEnd);
+
+	/** Get Slot End.
+	  * Time when timeslot ends
+	  */
+	public Timestamp getTimeSlotEnd();
+
+    /** Column name TimeSlotStart */
+    public static final String COLUMNNAME_TimeSlotStart = "TimeSlotStart";
+
+	/** Set Slot Start.
+	  * Time when timeslot starts
+	  */
+	public void setTimeSlotStart (Timestamp TimeSlotStart);
+
+	/** Get Slot Start.
+	  * Time when timeslot starts
+	  */
+	public Timestamp getTimeSlotStart();
 
     /** Column name Updated */
     public static final String COLUMNNAME_Updated = "Updated";

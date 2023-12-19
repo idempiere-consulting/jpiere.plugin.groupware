@@ -256,6 +256,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	private String p_jpVisibity = MSysConfig.getValue("JP_TODOVisibility", "NYNNN", Env.getAD_Client_ID(Env.getCtx()));
 	private boolean existsMP_Maintain_col = MColumn.get(Env.getCtx(), "JP_ToDo","MP_Maintain_ID")!=null;
 
+	//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+	private final static String CALENDAR_ICS = "Invia_ics";
+	private final static String USER_FILTER = "User_Filter";
 	/**
 	 * Constructor
 	 */
@@ -291,7 +294,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			ZKUpdateUtil.setWindowHeightX(this,  SessionManager.getAppDesktop().getClientInfo().desktopHeight);
 		}else {
 			ZKUpdateUtil.setWindowWidthX(this, 478);
-			ZKUpdateUtil.setWindowHeightX(this, 702);
+			ZKUpdateUtil.setWindowHeightX(this, 802);
 		}
 
 		this.setSclass("popup-dialog request-dialog");
@@ -486,7 +489,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Label.put(MToDo.COLUMNNAME_JP_ToDo_Status, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_JP_ToDo_Status)) );
 		//iDempiereConsulting __22/02/2022 ---
 		map_Label.put(MToDo.COLUMNNAME_IsComplete, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_IsComplete)) );
-		
+		//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+		map_Label.put(USER_FILTER, new Label("Utente Filtro") );
+		map_Label.put(MToDo.COLUMNNAME_RecipientTo, new Label(Msg.getElement(ctx, MToDo.COLUMNNAME_RecipientTo)) );
 
 		if(p_IsPersonalToDo)
 		{
@@ -712,6 +717,29 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		editor_IsComplete.addValueChangeListener(this);
 		map_Editor.put(MToDo.COLUMNNAME_IsComplete, editor_IsComplete);
 		//iDempiereConsulting __22/02/2022 --------END
+		
+		//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+		//*** "Invia_ics" ***//
+		WYesNoEditor editor_ics = new WYesNoEditor(CALENDAR_ICS, "Invia Evento Calendario", null, false, false, true);
+		editor_ics.addValueChangeListener(this);
+		map_Editor.put(CALENDAR_ICS, editor_ics);
+		
+		//*** User_filter ***//
+		MLookup lookup_User_filter = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_AD_User_ID),  DisplayType.Search);
+		WSearchEditor Editor_User_filter = new WSearchEditor(lookup_User_filter, "Utente Filtro", null, false, true, false);
+		ZKUpdateUtil.setHflex(Editor_User_filter.getComponent(), "true");
+		map_Editor.put(USER_FILTER, Editor_User_filter);
+		map_Editor.get(USER_FILTER).setVisible(false);
+		map_Label.get(USER_FILTER).setVisible(false);
+		
+		//*** Recipient ***//
+		WStringEditor editor_Recipient = new WStringEditor(MToDo.COLUMNNAME_RecipientTo, false, false, true, 30, 30, "", null);
+		ZKUpdateUtil.setHflex(editor_Recipient.getComponent(), "true");
+		editor_Recipient.getComponent().setRows(2);
+		map_Editor.put(MToDo.COLUMNNAME_RecipientTo, editor_Recipient);
+		map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setVisible(false);
+		map_Label.get(MToDo.COLUMNNAME_RecipientTo).setVisible(false);
+		//iDempiereConsulting __14/12/2023 --------END
 
 		//*** Statistics Info ***/
 		if(p_IsPersonalToDo)
@@ -799,6 +827,9 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setReadWrite(p_IsUpdatable_ToDoStatus? true: false);
 		//iDempiereConsulting __22/02/2022 ---
 		map_Editor.get(MToDo.COLUMNNAME_IsComplete).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+		map_Editor.get(USER_FILTER).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
+		map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setReadWrite(p_haveParentTeamToDo? false : p_IsUpdatable);
 
 		if(p_IsPersonalToDo)
 		{
@@ -858,6 +889,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(MToDo.JP_TODO_STATUS_NotYetStarted);
 			//iDempiereConsulting __22/02/2022 ---
 			map_Editor.get(MToDo.COLUMNNAME_IsComplete).setValue("N");
+			//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+			map_Editor.get(CALENDAR_ICS).setValue("N");
 
 		}else {
 
@@ -895,6 +928,15 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Status).setValue(p_iToDo.getJP_ToDo_Status());
 			//iDempiereConsulting __22/02/2022 ---
 			map_Editor.get(MToDo.COLUMNNAME_IsComplete).setValue(p_iToDo.isComplete());
+			//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+			map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setValue(p_iToDo.getRecipientTo());
+			if(p_iToDo.getSource_UUID()!=null && !p_iToDo.getSource_UUID().isEmpty() && p_iToDo.isSendICS()) {
+				map_Editor.get(CALENDAR_ICS).setValue("Y");
+				map_Label.get(USER_FILTER).setVisible(true);
+				map_Label.get(MToDo.COLUMNNAME_RecipientTo).setVisible(true);
+				map_Editor.get(USER_FILTER).setVisible(true);
+				map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setVisible(true);
+			}
 
 			if(p_IsPersonalToDo)
 			{
@@ -1500,6 +1542,22 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		row.appendCellChild(div_IsComplete,2);
 		//iDempiereConsulting __22/02/2022 -------END
 
+		//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+		//*** "Invia_ics" ***//
+		row = rows.newRow();
+		Div div_ics = new Div();
+		div_ics.appendChild(map_Editor.get(CALENDAR_ICS).getComponent());
+		row.appendCellChild(div_ics,2);
+		
+		row = rows.newRow();
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(USER_FILTER), true),2);
+		row.appendCellChild(map_Editor.get(USER_FILTER).getComponent(),4);
+		
+		row = rows.newRow();
+		row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_RecipientTo), true),2);
+		row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_RecipientTo).getComponent(),4);
+		//iDempiereConsulting __14/12/2023 --------END
+
 		if(!p_IsPersonalToDo && !p_IsNewRecord)
 		{
 			row = rows.newRow();
@@ -1599,13 +1657,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 		if (p_IsNewRecord && event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_OK))
 		{
-
 			if(saveToDo())
 			{
 				this.detach();
 			}
-
-
 		}
 		else if (p_IsNewRecord && event.getTarget() == confirmPanel.getButton(ConfirmPanel.A_CANCEL))
 		{
@@ -2076,6 +2131,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_iToDo.setQty(db_ToDo.getQty());
 				p_iToDo.setProductTransfer_ID(db_ToDo.getProductTransfer_ID());
 				p_iToDo.setIsComplete(db_ToDo.isComplete());//iDempiereConsulting __22/02/2022
+				p_iToDo.setisSendICS(db_ToDo.isSendICS());//iDempiereConsulting __14/12/2023
+				p_iToDo.setRecipientTo(db_ToDo.getRecipientTo());//iDempiereConsulting __14/12/2023
 				//iDempiereConsulting __26/10/2021 -------END
 				if(p_iToDo.get_TableName().equals(MToDo.Table_Name))
 				{
@@ -2535,6 +2592,17 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		valueChangeFieldMap.put(MToDo.COLUMNNAME_IsComplete, p_iToDo.is_ValueChanged(MToDo.COLUMNNAME_IsComplete));
 		
 		//iDempiereConsulting __26/10/2021 ------END
+		
+		//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+		if(((WYesNoEditor)map_Editor.get(CALENDAR_ICS)).getComponent().isChecked()) {
+			editor = map_Editor.get(MToDo.COLUMNNAME_RecipientTo);
+			p_iToDo.setRecipientTo((String)editor.getValue());
+			//Filtro per identificare il calendari da inviare
+			p_iToDo.setisSendICS(true);
+		}
+		else
+			p_iToDo.setisSendICS(false);
+		//iDempiereConsulting __14/12/2023 ---END
 
 		//Check only update ToDo Status
 		if(isOnlyUpdateToDoStatus)
@@ -3372,6 +3440,35 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			
 		}
 		//iDempiereConsulting __26/10/2021 -------END
+		
+		//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+		else if(CALENDAR_ICS.equals(name) && value.equals(true)) {
+			map_Editor.get(USER_FILTER).setVisible(true);
+			map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setVisible(true);
+			map_Label.get(USER_FILTER).setVisible(true);
+			map_Label.get(MToDo.COLUMNNAME_RecipientTo).setVisible(true);
+			//return;
+			
+		}
+		else if(CALENDAR_ICS.equals(name) && value.equals(false)) {
+			map_Editor.get(USER_FILTER).setVisible(false);
+			map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setVisible(false);
+			map_Label.get(USER_FILTER).setVisible(false);
+			map_Label.get(MToDo.COLUMNNAME_RecipientTo).setVisible(false);
+			//return;
+		}
+		else if(USER_FILTER.equals(name)) {
+			if(value==null)
+				return;
+			int adUserID = (Integer)value;
+			String mail = MUser.get(adUserID).getEMail();
+			String recipient = ((WStringEditor)map_Editor.get(MToDo.COLUMNNAME_RecipientTo)).getComponent().getValue();
+			if(recipient!=null && !recipient.isEmpty())
+				recipient = recipient + "," + mail;
+			else
+				recipient = mail;
+			map_Editor.get(MToDo.COLUMNNAME_RecipientTo).setValue(recipient);
+		}
 
 		p_IsDirty = true;
 		updateNorth();

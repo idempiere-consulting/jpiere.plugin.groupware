@@ -22,10 +22,40 @@
 			<layout>p2</layout>
 			<url>file:///opt/repos/idempiere-ita-plugin/it.idIta.impl.LIT_I-Service/target/</url>
 		</repository>
+		<repository>
+			<id>coreUtilP2</id>
+			<layout>p2</layout>
+			<url>file:///opt/repos/idempiere-ita-plugin/it.idIta.impl.coreUtil/target/</url>
+		</repository>
 	</repositories>
 
 	<build>
 		<plugins>
+	 		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+								    <groupId>com.sun.mail</groupId>
+								    <artifactId>javax.mail</artifactId>
+								    <version>1.6.1</version>
+								</artifactItem>					
+							</artifactItems>
+							<outputDirectory>lib</outputDirectory>
+							<stripVersion>true</stripVersion>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<!-- enable tycho build extension -->
 				<groupId>org.eclipse.tycho</groupId>
