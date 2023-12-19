@@ -283,5 +283,29 @@ public interface I_ToDo
 	public boolean isComplete();
 
 	//iDempiereConsulting __26/10/2021 -------END
+	
+	//iDempiereConsulting __14/12/2023 --- Invia evento calendario
+	/** Set Source UUID.
+	  */
+	public void setSource_UUID (String Source_UUID);
 
+	/** Get Source UUID.
+	  */
+	public String getSource_UUID();
+	
+	/** Set Sequence	  */
+	public void setSequence (BigDecimal Sequence);
+
+	/** Get Sequence	  */
+	public BigDecimal getSequence();
+	
+	/** Set To	  */
+	public void setRecipientTo (String RecipientTo);
+
+	/** Get To	  */
+	public String getRecipientTo();
+	
+	public boolean isSendICS();
+	public void setisSendICS (boolean sendIt);
+	//iDempiereConsulting __14/12/2023 --------END
 }

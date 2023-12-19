@@ -702,6 +702,19 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 	public void setValue(String ColumnName, Object value) {
 		super.set_Value(ColumnName, value);
 	}
+
+
+	@Override
+	public boolean isSendICS() {
+		return isSendIt();
+	}
+
+
+	@Override
+	public void setisSendICS(boolean sendIt) {
+		setSendIt(sendIt);
+		
+	}
 	
 
 }

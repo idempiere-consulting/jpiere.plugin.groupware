@@ -35,7 +35,7 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20220222L;
+	private static final long serialVersionUID = 20231218L;
 
     /** Standard Constructor */
     public X_JP_ToDo (Properties ctx, int JP_ToDo_ID, String trxName)
@@ -43,6 +43,8 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
       super (ctx, JP_ToDo_ID, trxName);
       /** if (JP_ToDo_ID == 0)
         {
+			setAD_User2_ID (0);
+// 100
 			setAD_User_ID (0);
 			setIsEndDateAllDayJP (false);
 // N
@@ -117,6 +119,34 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		return ii.intValue();
 	}
 
+	public org.compiere.model.I_AD_User getAD_User2() throws RuntimeException
+	{
+		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
+			.getPO(getAD_User2_ID(), get_TrxName());
+	}
+
+	/** Set User/Contact.
+		@param AD_User2_ID User within the system - Internal or Business Partner Contact
+	*/
+	public void setAD_User2_ID (int AD_User2_ID)
+	{
+		if (AD_User2_ID < 1)
+			set_ValueNoCheck (COLUMNNAME_AD_User2_ID, null);
+		else
+			set_ValueNoCheck (COLUMNNAME_AD_User2_ID, Integer.valueOf(AD_User2_ID));
+	}
+
+	/** Get User/Contact.
+		@return User within the system - Internal or Business Partner Contact
+	  */
+	public int getAD_User2_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_AD_User2_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
 	public org.compiere.model.I_AD_User getAD_User() throws RuntimeException
 	{
 		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
@@ -157,9 +187,9 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public void setC_BPartner_ID (int C_BPartner_ID)
 	{
 		if (C_BPartner_ID < 1)
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, null);
+			set_Value (COLUMNNAME_C_BPartner_ID, null);
 		else
-			set_ValueNoCheck (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
+			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
 
 	/** Get Business Partner.
@@ -315,6 +345,28 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public String getDescription()
 	{
 		return (String)get_Value(COLUMNNAME_Description);
+	}
+
+	/** Set IsChild.
+		@param IsChild IsChild
+	*/
+	public void setIsChild (boolean IsChild)
+	{
+		set_Value (COLUMNNAME_IsChild, Boolean.valueOf(IsChild));
+	}
+
+	/** Get IsChild.
+		@return IsChild	  */
+	public boolean isChild()
+	{
+		Object oo = get_Value(COLUMNNAME_IsChild);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
 	}
 
 	/** Set Complete.
@@ -753,54 +805,6 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		return (String)get_Value(COLUMNNAME_JP_ToDo_UU);
 	}
 
-	public org.compiere.model.I_AD_User getLIT_Ad_User_Lead() throws RuntimeException
-	{
-		return (org.compiere.model.I_AD_User)MTable.get(getCtx(), org.compiere.model.I_AD_User.Table_ID)
-			.getPO(getLIT_Ad_User_Lead_ID(), get_TrxName());
-	}
-
-	/** Set Lead ID.
-		@param LIT_Ad_User_Lead_ID Lead ID
-	*/
-	public void setLIT_Ad_User_Lead_ID (int LIT_Ad_User_Lead_ID)
-	{
-		if (LIT_Ad_User_Lead_ID < 1)
-			set_Value (COLUMNNAME_LIT_Ad_User_Lead_ID, null);
-		else
-			set_Value (COLUMNNAME_LIT_Ad_User_Lead_ID, Integer.valueOf(LIT_Ad_User_Lead_ID));
-	}
-
-	/** Get Lead ID.
-		@return Lead ID	  */
-	public int getLIT_Ad_User_Lead_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_LIT_Ad_User_Lead_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	/** Set ERP Object Task.
-		@param LIT_ERPObjectTask_ID ERP Object Task
-	*/
-	public void setLIT_ERPObjectTask_ID (int LIT_ERPObjectTask_ID)
-	{
-		if (LIT_ERPObjectTask_ID < 1)
-			set_Value (COLUMNNAME_LIT_ERPObjectTask_ID, null);
-		else
-			set_Value (COLUMNNAME_LIT_ERPObjectTask_ID, Integer.valueOf(LIT_ERPObjectTask_ID));
-	}
-
-	/** Get ERP Object Task.
-		@return ERP Object Task	  */
-	public int getLIT_ERPObjectTask_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_LIT_ERPObjectTask_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
 	/** Set Name.
 		@param Name Alphanumeric identifier of the entity
 	*/
@@ -942,6 +946,21 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		return bd;
 	}
 
+	/** Set To.
+		@param RecipientTo To
+	*/
+	public void setRecipientTo (String RecipientTo)
+	{
+		set_Value (COLUMNNAME_RecipientTo, RecipientTo);
+	}
+
+	/** Get To.
+		@return To	  */
+	public String getRecipientTo()
+	{
+		return (String)get_Value(COLUMNNAME_RecipientTo);
+	}
+
 	/** Set Record ID.
 		@param Record_ID Direct internal record ID
 	*/
@@ -990,6 +1009,94 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
+	}
+
+	/** Set Send.
+		@param SendIt Send
+	*/
+	public void setSendIt (boolean SendIt)
+	{
+		set_Value (COLUMNNAME_SendIt, Boolean.valueOf(SendIt));
+	}
+
+	/** Get Send.
+		@return Send	  */
+	public boolean isSendIt()
+	{
+		Object oo = get_Value(COLUMNNAME_SendIt);
+		if (oo != null) 
+		{
+			 if (oo instanceof Boolean) 
+				 return ((Boolean)oo).booleanValue(); 
+			return "Y".equals(oo);
+		}
+		return false;
+	}
+
+	/** Set Sequence.
+		@param Sequence Sequence
+	*/
+	public void setSequence (BigDecimal Sequence)
+	{
+		set_Value (COLUMNNAME_Sequence, Sequence);
+	}
+
+	/** Get Sequence.
+		@return Sequence	  */
+	public BigDecimal getSequence()
+	{
+		BigDecimal bd = (BigDecimal)get_Value(COLUMNNAME_Sequence);
+		if (bd == null)
+			 return Env.ZERO;
+		return bd;
+	}
+
+	/** Set Source UUID.
+		@param Source_UUID UUID from the source client
+	*/
+	public void setSource_UUID (String Source_UUID)
+	{
+		set_Value (COLUMNNAME_Source_UUID, Source_UUID);
+	}
+
+	/** Get Source UUID.
+		@return UUID from the source client
+	  */
+	public String getSource_UUID()
+	{
+		return (String)get_Value(COLUMNNAME_Source_UUID);
+	}
+
+	/** Set Slot End.
+		@param TimeSlotEnd Time when timeslot ends
+	*/
+	public void setTimeSlotEnd (Timestamp TimeSlotEnd)
+	{
+		set_Value (COLUMNNAME_TimeSlotEnd, TimeSlotEnd);
+	}
+
+	/** Get Slot End.
+		@return Time when timeslot ends
+	  */
+	public Timestamp getTimeSlotEnd()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_TimeSlotEnd);
+	}
+
+	/** Set Slot Start.
+		@param TimeSlotStart Time when timeslot starts
+	*/
+	public void setTimeSlotStart (Timestamp TimeSlotStart)
+	{
+		set_Value (COLUMNNAME_TimeSlotStart, TimeSlotStart);
+	}
+
+	/** Get Slot Start.
+		@return Time when timeslot starts
+	  */
+	public Timestamp getTimeSlotStart()
+	{
+		return (Timestamp)get_Value(COLUMNNAME_TimeSlotStart);
 	}
 
 	/** Set URL.

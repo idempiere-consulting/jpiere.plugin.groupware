@@ -6,7 +6,10 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.IEventTopics;
@@ -15,15 +18,20 @@ import org.compiere.model.MRequest;
 import org.compiere.model.MRequestType;
 import org.compiere.model.MStatus;
 import org.compiere.model.MStatusCategory;
+import org.compiere.model.MUser;
 import org.compiere.model.PO;
 import org.compiere.model.Query;
+import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Trx;
 import org.osgi.service.event.Event;
 
+import jpiere.plugin.groupware.ics.SendMail_ICS;
+
 public class Groupware_EventHandler extends AbstractEventHandler {
 	
 	private boolean byPass = false;
+	private boolean byPass_ics = false;
 
 	@Override
 	protected void initialize() {
@@ -31,6 +39,8 @@ public class Groupware_EventHandler extends AbstractEventHandler {
 		registerTableEvent(IEventTopics.PO_AFTER_NEW, "R_Request");
 		registerTableEvent(IEventTopics.PO_AFTER_CHANGE, "R_Request");
 		registerTableEvent(IEventTopics.PO_AFTER_CHANGE, "JP_ToDo");
+		registerTableEvent(IEventTopics.PO_AFTER_NEW, "JP_ToDo");
+		registerTableEvent(IEventTopics.PO_BEFORE_DELETE, "JP_ToDo");
 
 	}
 
@@ -138,6 +148,82 @@ public class Groupware_EventHandler extends AbstractEventHandler {
 				byPass = true;
 				request.saveEx();
 				byPass = false;
+			}
+			
+			if(!byPass_ics && po.get_TableName().equals("JP_ToDo") && po.get_ValueAsBoolean("SendIt")) {
+				MToDo personalTODO = (MToDo)po;
+				
+				String uid = personalTODO.getSource_UUID();
+				if(uid == null || uid.isEmpty())
+					uid = UUID.randomUUID().toString();
+				BigDecimal seq = personalTODO.getSequence();
+				if(seq == null || seq.compareTo(BigDecimal.ZERO)==0)
+					seq = BigDecimal.ZERO;
+				else
+					seq = seq.add(BigDecimal.ONE);
+				String recipient = personalTODO.getRecipientTo();
+				List<String>contactEmail = new ArrayList<String>();
+				if(recipient.split(",").length>0)
+					contactEmail.addAll(Arrays.asList(recipient.split(",")));
+				contactEmail.add(MUser.get(personalTODO.getAD_User_ID()).getEMail());//utente assegnato il calendario principale
+				String description = personalTODO.getDescription();
+				
+				SendMail_ICS mail_ICS = new SendMail_ICS()
+						.withEmailContacts(contactEmail)
+						.withEmailFrom(MUser.get(personalTODO.getCreatedBy()).getEMail())
+						.withSubject(personalTODO.getName())
+						.withMessage(description)
+						.withStartDate(personalTODO.getJP_ToDo_ScheduledStartTime())
+						.withEndDate(personalTODO.getJP_ToDo_ScheduledEndTime());
+				if(mail_ICS.sendMail_withICS(uid, seq.toString(), false)) {
+					try {
+						DB.commit(false, personalTODO.get_TrxName());
+					} catch (IllegalStateException e) {
+						e.printStackTrace();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					personalTODO.setDescription(description);
+					personalTODO.setSequence(seq);
+					if(personalTODO.getSource_UUID()==null || personalTODO.getSource_UUID().isEmpty())
+						personalTODO.setSource_UUID(uid);
+					byPass_ics = true;
+					personalTODO.saveEx();
+					byPass_ics = false;
+					//DB.executeUpdateEx("UPDATE JP_ToDo SET Description=?, Sequence=? WHERE AD_Client_ID=? AND JP_ToDo_ID=?", new Object[] {description, seq, personalTODO.getAD_Client_ID(), personalTODO.getJP_ToDo_ID()}, null);
+					//DB.executeUpdateEx("UPDATE JP_ToDo SET Source_UUID=? WHERE AD_Client_ID=? AND JP_ToDo_ID=? AND Source_UUID IS NULL", new Object[] {uid, personalTODO.getAD_Client_ID(), personalTODO.getJP_ToDo_ID()}, null);
+				}
+			}
+		}
+		else if(event.getTopic().equals(IEventTopics.PO_BEFORE_DELETE)) {
+			PO po = getPO(event);
+			if(po.get_TableName().equals("JP_ToDo") && po.get_ValueAsBoolean("SendIt")) {
+				MToDo personalTODO = (MToDo)po;
+				
+				String uid = personalTODO.getSource_UUID();
+				if(uid == null || uid.isEmpty())
+					uid = UUID.randomUUID().toString();
+				BigDecimal seq = personalTODO.getSequence();
+				if(seq == null || seq.compareTo(BigDecimal.ZERO)==0)
+					seq = BigDecimal.ZERO;
+				else
+					seq = seq.add(BigDecimal.ONE);
+				String recipient = personalTODO.getRecipientTo();
+				List<String>contactEmail = new ArrayList<String>();
+				if(recipient.split(",").length>0)
+					contactEmail.addAll(Arrays.asList(recipient.split(",")));
+				contactEmail.add(MUser.get(personalTODO.getAD_User_ID()).getEMail());//utente assegnato il calendario principale
+				String description = personalTODO.getDescription();
+				
+				SendMail_ICS mail_ICS = new SendMail_ICS()
+						.withEmailContacts(contactEmail)
+						.withEmailFrom(MUser.get(personalTODO.getCreatedBy()).getEMail())
+						.withSubject(personalTODO.getName())
+						.withMessage(description)
+						.withStartDate(personalTODO.getJP_ToDo_ScheduledStartTime())
+						.withEndDate(personalTODO.getJP_ToDo_ScheduledEndTime());
+				
+				mail_ICS.sendMail_withICS(uid, seq.toString(), true);
 			}
 		}
 	}

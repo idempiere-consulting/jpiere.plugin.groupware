@@ -20,7 +20,8 @@ Require-Bundle: org.adempiere.base;bundle-version="7.1.0",
  com.sun.activation.jakarta.activation;bundle-version="1.2.2"
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/javax.mail.jar
 Import-Package: it.idIta.idempiere.LIT_I_Service.model;resolution:=optional,
  org.osgi.service.event
 Export-Package: jpiere.plugin.groupware.model

@@ -784,5 +784,61 @@ public class MToDoTeam extends X_JP_ToDo_Team implements I_ToDo{
 	public void setValue(String ColumnName, Object value) {
 		super.set_Value(ColumnName, value);
 	}
+
+
+	@Override
+	public void setSource_UUID(String Source_UUID) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public String getSource_UUID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setSequence(BigDecimal Sequence) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public BigDecimal getSequence() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setRecipientTo(String RecipientTo) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public String getRecipientTo() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean isSendICS() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
+	@Override
+	public void setisSendICS(boolean sendIt) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
