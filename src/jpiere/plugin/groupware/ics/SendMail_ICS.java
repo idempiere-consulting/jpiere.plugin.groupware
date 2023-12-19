@@ -53,6 +53,8 @@ public class SendMail_ICS {
 		EMail email = null;
 		
 		for (String eContact : emailsContact) {
+			if(eContact == null || eContact.isEmpty())
+				continue;
 			email = client.createEMail(eContact, "TestW", null);
 			email.setFrom(/*"marco.longo@idempiere.consulting"*/emailFrom);
 			email.setMessageHTML(subject, message);

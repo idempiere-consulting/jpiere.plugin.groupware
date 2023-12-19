@@ -727,6 +727,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 		//*** User_filter ***//
 		MLookup lookup_User_filter = MLookupFactory.get(Env.getCtx(), 0,  0, MColumn.getColumn_ID(MToDo.Table_Name, MToDo.COLUMNNAME_AD_User_ID),  DisplayType.Search);
 		WSearchEditor Editor_User_filter = new WSearchEditor(lookup_User_filter, "Utente Filtro", null, false, true, false);
+		Editor_User_filter.addValueChangeListener(this);
 		ZKUpdateUtil.setHflex(Editor_User_filter.getComponent(), "true");
 		map_Editor.put(USER_FILTER, Editor_User_filter);
 		map_Editor.get(USER_FILTER).setVisible(false);
@@ -3221,7 +3222,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 
 			updateCenter();
 
-		}else if(MToDo.COLUMNNAME_AD_User_ID.equals(name)) {
+		}else if(MToDo.COLUMNNAME_AD_User_ID.equals(name) && evt.getSource()!= null && !((WSearchEditor)evt.getSource()).getLabel().getValue().equals("Utente Filtro")) {
 
 			String validationCode = null;
 			if(evt.getNewValue()==null)
@@ -3457,7 +3458,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Label.get(MToDo.COLUMNNAME_RecipientTo).setVisible(false);
 			//return;
 		}
-		else if(USER_FILTER.equals(name)) {
+		else if("AD_User_ID".equals(name) && evt.getSource()!= null && ((WSearchEditor)evt.getSource()).getLabel().getValue().equals("Utente Filtro")) {
 			if(value==null)
 				return;
 			int adUserID = (Integer)value;
