@@ -25,11 +25,6 @@
 			<layout>p2</layout>
 			<url>file:///opt/repos/idempiere-ita-plugin/it.cnet.impl.contract/target/</url>
 		</repository>
-		<repository>
-			<id>coreUtilP2</id>
-			<layout>p2</layout>
-			<url>file:///opt/repos/idempiere-ita-plugin/it.idIta.impl.coreUtil/target/</url>
-		</repository>
 	</repositories>
 	<build>
 		<plugins>
@@ -57,13 +52,6 @@
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-			<plugin>
-				<!-- enable tycho build extension -->
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>2.2.0</version>
-				<extensions>true</extensions>
 			</plugin>
 		</plugins>
 	</build>
