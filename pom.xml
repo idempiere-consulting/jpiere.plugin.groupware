@@ -3,7 +3,7 @@
   <parent>
 	<groupId>it.idIta.idempiere.extensions</groupId>
 	<artifactId>it.idIta.idempiere.extensions.parent</artifactId>
-	<version>10.0.0-SNAPSHOT</version>
+	<version>11.0.0-SNAPSHOT</version>
 	<relativePath>../idempiere-ita-plugin/it.idIta.idempiere.extensions.parent/pom.xml</relativePath>
   </parent>
   <artifactId>jpiere.plugin.groupware</artifactId>

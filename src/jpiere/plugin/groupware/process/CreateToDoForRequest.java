@@ -1,7 +1,5 @@
 package jpiere.plugin.groupware.process;
 
-import java.util.List;
-
 import org.adempiere.webui.apps.AEnv;
 import org.adempiere.webui.panel.ADForm;
 import org.adempiere.webui.session.SessionManager;

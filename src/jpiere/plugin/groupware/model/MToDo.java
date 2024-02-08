@@ -24,12 +24,11 @@ import java.util.List;
 import java.util.Properties;
 
 import org.compiere.model.MMessage;
+import org.compiere.model.MProjectType;
 import org.compiere.model.MResourceAssignment;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_ContactActivity;
 import org.compiere.model.X_C_Project;
-import org.compiere.model.MProject;
-import org.compiere.model.MProjectType;
 import org.compiere.util.DB;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;

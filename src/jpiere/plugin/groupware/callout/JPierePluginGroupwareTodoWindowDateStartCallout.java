@@ -6,7 +6,6 @@ import java.util.Properties;
 import org.adempiere.base.IColumnCallout;
 import org.compiere.model.GridField;
 import org.compiere.model.GridTab;
-import org.compiere.util.CLogger;
 
 import jpiere.plugin.groupware.model.MToDo;
 
