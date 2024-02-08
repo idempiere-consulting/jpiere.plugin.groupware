@@ -584,7 +584,7 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 		if(M_Product_ID>0)
 			resAssignment.set_ValueOfColumn("M_Product_ID",M_Product_ID);
 		resAssignment.set_ValueOfColumn("isDoNotInvoice", isDoNotInvoice);
-		if(C_BPartner_ID<=0)
+		if(getC_BPartner_ID()>0) // Priorità a quello impostato manualmente sul PersonalTODO
 			C_BPartner_ID = getC_BPartner_ID();
 		resAssignment.set_ValueOfColumn("C_BPartner_ID", C_BPartner_ID);
 		
