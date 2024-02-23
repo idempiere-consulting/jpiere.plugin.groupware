@@ -80,6 +80,7 @@ import org.compiere.model.X_C_Project;
 import org.compiere.model.X_R_Request;
 import org.compiere.process.ProcessInfo;
 import org.compiere.util.CLogger;
+import org.compiere.util.DB;
 import org.compiere.util.DisplayType;
 import org.compiere.util.Env;
 import org.compiere.util.Msg;
@@ -3640,6 +3641,12 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(requestID);
 			p_r_request_ID = requestID;
 			((WSearchEditor)map_Editor.get(MToDo.COLUMNNAME_R_Request_ID)).valueChange(new ValueChangeEvent(map_Editor.get(MToDo.COLUMNNAME_R_Request_ID), "Change", null, requestID));
+			int projectID = DB.getSQLValue(null, "SELECT C_Project_ID FROM R_Request WHERE R_Request_ID=?", requestID);
+			if(projectID > 0) {
+				map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).setValue(projectID);
+				p_c_project_ID = projectID;
+				((WSearchEditor)map_Editor.get(MToDo.COLUMNNAME_C_Project_ID)).valueChange(new ValueChangeEvent(map_Editor.get(MToDo.COLUMNNAME_C_Project_ID), "Change", null, projectID));
+			}
 		}
 	}
 	
