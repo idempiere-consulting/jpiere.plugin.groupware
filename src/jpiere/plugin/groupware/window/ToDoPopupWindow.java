@@ -67,13 +67,16 @@ import org.compiere.model.MAttachment;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MOrderLine;
 import org.compiere.model.MPInstance;
 import org.compiere.model.MProcess;
 import org.compiere.model.MProduct;
 import org.compiere.model.MRequestType;
+import org.compiere.model.MResource;
 import org.compiere.model.MSysConfig;
 import org.compiere.model.MTable;
 import org.compiere.model.MUser;
+import org.compiere.model.PO;
 import org.compiere.model.Query;
 import org.compiere.model.X_C_ContactActivity;
 import org.compiere.model.X_C_Project;
@@ -102,6 +105,8 @@ import org.zkoss.zul.North;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.South;
 import org.zkoss.zul.Timebox;
+
+import com.google.gson.JsonObject;
 
 import it.idIta.idempiere.LIT_I_Service.model.X_MP_Maintain;
 import it.idIta.idempiere.LIT_I_Service.model.X_MP_OT;
@@ -3647,6 +3652,63 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_c_project_ID = projectID;
 				((WSearchEditor)map_Editor.get(MToDo.COLUMNNAME_C_Project_ID)).valueChange(new ValueChangeEvent(map_Editor.get(MToDo.COLUMNNAME_C_Project_ID), "Change", null, projectID));
 			}
+		}
+	}
+	
+	//iDempiereConsulting __10/07/2024 --- Per processo di creazione evento calendario, sostituisce il precedente metodo 'public void setRequestforCalendar(int requestID)'
+	public void setValuesForCalendar(JsonObject valueParse) {
+		String tableName = valueParse.get("TableName").getAsString();
+		int recordID = valueParse.get("RecordID").getAsInt();
+		if(tableName.equals("R_Request")) {
+			if(p_jpVisibity.split("")[2].equals("Y")) {
+				int requestID = recordID;
+				map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(requestID);
+				p_r_request_ID = requestID;
+				((WSearchEditor)map_Editor.get(MToDo.COLUMNNAME_R_Request_ID)).valueChange(new ValueChangeEvent(map_Editor.get(MToDo.COLUMNNAME_R_Request_ID), "Change", null, requestID));
+			}
+		}
+		else {
+			PO p_modelRecord = (MTable.get(ctx, tableName)).getPO(recordID, null);
+			
+			if(p_modelRecord.get_ValueAsInt("S_Resource_ID")>0) 
+				map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(MResource.get(Env.getCtx(), p_modelRecord.get_ValueAsInt("S_Resource_ID")).getAD_User_ID());
+			if(p_modelRecord.get_ValueAsInt("C_Project_ID")>0)  //se presente....
+				map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).setValue(p_modelRecord.get_ValueAsInt("C_Project_ID"));
+			if(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID")>0)  //se presente....
+				map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID"));
+			if(p_modelRecord.get_ValueAsInt("R_Request_ID")>0)  //se presente....
+				map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_modelRecord.get_ValueAsInt("R_Request_ID"));
+			if(p_modelRecord.get_ValueAsInt("MP_Maintain_ID")>0)  //se presente....
+				map_Editor.get("MP_Maintain_ID").setValue(p_modelRecord.get_ValueAsInt("MP_Maintain_ID"));
+			if(p_modelRecord.get_ValueAsInt("MP_OT_ID")>0)  //se presente....
+				map_Editor.get("MP_OT_ID").setValue(p_modelRecord.get_ValueAsInt("MP_OT_ID"));
+			if(p_modelRecord.get_ValueAsInt("C_BPartner_ID")>0)
+				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_modelRecord.get_ValueAsInt("C_BPartner_ID"));
+			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue("S");
+			String name = p_modelRecord.get_ValueAsString("Help");
+			if(name.isEmpty())
+				name = "--";
+			String description = p_modelRecord.get_ValueAsString("Name");
+			if(description.isEmpty())
+				description = "--";
+			String comments = p_modelRecord.get_ValueAsString("Description");
+			if(comments.isEmpty())
+				comments = "--";
+			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(name);
+			map_Editor.get(MToDo.COLUMNNAME_Description).setValue(description);
+			map_Editor.get(MToDo.COLUMNNAME_Comments).setValue(comments);
+			if(p_modelRecord.get_Value("DateStartSchedule")!=null && p_modelRecord.get_Value("Qty")!=null) {
+				Timestamp date = (Timestamp) p_modelRecord.get_Value("DateStartSchedule");
+				BigDecimal qty = (BigDecimal) p_modelRecord.get_Value("Qty");
+				map_Editor.get(MToDo.COLUMNNAME_Qty).setValue(qty);
+				map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartDate).setValue(date);
+				map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime).setValue(date);
+				Timestamp dateTo = Timestamp.valueOf(date.toLocalDateTime().plusHours(qty.longValue()));
+				map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndDate).setValue(dateTo);
+				map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(dateTo);
+				
+			}
+			
 		}
 	}
 	
