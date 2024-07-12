@@ -94,6 +94,8 @@ import org.zkoss.zul.Tabs;
 import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.West;
 
+import com.google.gson.JsonObject;
+
 import jpiere.plugin.groupware.model.I_ToDo;
 import jpiere.plugin.groupware.model.MGroupwareUser;
 import jpiere.plugin.groupware.model.MTeam;
@@ -255,6 +257,8 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 	private boolean mobile = false;
 	
 	private int calendarForRequest = -1;
+	
+	private JsonObject jsonObj = null;
 
 	/**
 	 * Constructor
@@ -1840,6 +1844,10 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 				//iDempiereConsulting __30/11/2023 --- Per processo di creazione evento calendario (jpiere.plugin.groupware.process.CreateToDoForRequest)
 				if(calendarForRequest>0)
 					todoWindow.setValueForRequest(calendarForRequest);
+				//iDempiereConsulting __10/07/2024 --- Per processo di creazione evento calendario, sostituisce il precedente metodo
+				else if(jsonObj != null)
+					todoWindow.setValuesForCalendar(jsonObj);
+				
 
 				SessionManager.getAppDesktop().showWindow(todoWindow);
 			}
@@ -3783,6 +3791,16 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 		
 		SessionManager.getAppDesktop().showWindow(todoWindow);
 	*/
+	}
+	
+	//iDempiereConsulting __10/07/2024 --- Per processo di creazione evento calendario, sostituisce il precedente metodo 'public void setRequestforCalendar(int requestID)'
+	public void setValuesForCalendar(JsonObject valueParse) {
+		String tableName = valueParse.get("TableName").getAsString();
+		if(tableName.equals("R_Request"))
+			calendarForRequest = valueParse.get("RecordID").getAsInt();
+		else {
+			jsonObj = valueParse;
+		}
 	}
 
 }
