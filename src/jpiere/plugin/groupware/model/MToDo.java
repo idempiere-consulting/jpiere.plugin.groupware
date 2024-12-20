@@ -44,6 +44,8 @@ import org.compiere.util.Util;
  */
 public class MToDo extends X_JP_ToDo implements I_ToDo {
 
+	private static final long serialVersionUID = -9016792772388050751L;
+
 	public MToDo(Properties ctx, int JP_ToDo_Team_ID, String trxName)
 	{
 		super(ctx, JP_ToDo_Team_ID, trxName);
@@ -230,7 +232,7 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 					MToDoTeam teamToDo = new MToDoTeam(getCtx(), getJP_ToDo_Team_ID(), get_TrxName());
 					if(MToDoTeam.JP_MANDATORY_STATISTICS_INFO_None.equals(teamToDo.getJP_Mandatory_Statistics_Info()))
 					{
-						;//Noting to do;
+						;//Nothing to do;
 
 					}else if(MToDoTeam.JP_MANDATORY_STATISTICS_INFO_YesNo.equals(teamToDo.getJP_Mandatory_Statistics_Info())){
 

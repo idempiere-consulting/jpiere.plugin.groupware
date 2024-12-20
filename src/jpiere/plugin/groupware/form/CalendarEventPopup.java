@@ -62,6 +62,8 @@ import jpiere.plugin.groupware.util.GroupwareToDoUtil;
 */
 public class CalendarEventPopup extends Popup implements EventListener<Event>{
 
+	private static final long serialVersionUID = 6265348008402018104L;
+
 	private Properties ctx = Env.getCtx();
 
 	/*** Web Components ***/
@@ -545,7 +547,7 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 			row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_IsStartDateAllDayJP).getComponent(),2);
 			if(p_I_ToDo.isStartDateAllDayJP())
 			{
-				;//Noting to do
+				;//Nothing to do
 			}else {
 				row = rows.newRow();
 				row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime), true),2);
@@ -564,7 +566,7 @@ public class CalendarEventPopup extends Popup implements EventListener<Event>{
 			row.appendCellChild(map_Editor.get(MToDo.COLUMNNAME_IsEndDateAllDayJP).getComponent(),2);
 			if(p_I_ToDo.isEndDateAllDayJP())
 			{
-				;//Noting to do
+				;//Nothing to do
 			}else {
 				row = rows.newRow();
 				row.appendCellChild(GroupwareToDoUtil.createLabelDiv(map_Label.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime), true),2);

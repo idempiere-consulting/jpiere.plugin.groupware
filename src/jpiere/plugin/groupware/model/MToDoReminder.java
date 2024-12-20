@@ -52,6 +52,8 @@ import org.idempiere.broadcast.BroadcastMsgUtil;
  */
 public class MToDoReminder extends X_JP_ToDo_Reminder implements I_ToDoReminder {
 
+	private static final long serialVersionUID = -5427497167992634836L;
+	
 	public static final String COLUMNNAME_JP_ToDo_RemindDate = "JP_ToDo_RemindDate";
 	private MToDo parent = null;
 
@@ -135,7 +137,7 @@ public class MToDoReminder extends X_JP_ToDo_Reminder implements I_ToDoReminder 
 			MToDoTeamReminder teamToDoReminder = new MToDoTeamReminder(getCtx(), getJP_ToDo_Team_Reminder_ID(), get_TrxName());
 			if(MToDoTeamReminder.JP_MANDATORY_STATISTICS_INFO_None.equals(teamToDoReminder.getJP_Mandatory_Statistics_Info()))
 			{
-				;//Noting to do;
+				;//Nothing to do;
 
 			}else if(MToDoTeamReminder.JP_MANDATORY_STATISTICS_INFO_YesNo.equals(teamToDoReminder.getJP_Mandatory_Statistics_Info())){
 
