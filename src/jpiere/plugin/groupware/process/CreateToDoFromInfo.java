@@ -121,9 +121,7 @@ public class CreateToDoFromInfo extends SvrProcess {
 		else {
 			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
 			boolean isLinked = false;
-			
 			PO p_modelRecord = (MTable.get(getCtx(), tableName)).getPO(recordID, null);
-			
 			if(p_modelRecord.get_ValueAsInt("S_Resource_ID")>0) { 
 				calendar.setAD_User_ID(MResource.get(Env.getCtx(), p_modelRecord.get_ValueAsInt("S_Resource_ID")).getAD_User_ID());
 				isLinked = true;
@@ -157,18 +155,19 @@ public class CreateToDoFromInfo extends SvrProcess {
 			}
 			//iDempiereConsulting __24/12/2024 -------END
 			calendar.setJP_ToDo_Type(MToDo.JP_TODO_TYPE_Schedule);
-			String name = p_modelRecord.get_ValueAsString("Help");
+			String name = p_modelRecord.get_ValueAsString("Name");
 			if(name.isEmpty())
 				name = "--";
-			String description = p_modelRecord.get_ValueAsString("Name");
+			String description = p_modelRecord.get_ValueAsString("Description");
 			if(description.isEmpty())
 				description = "--";
-			String comments = p_modelRecord.get_ValueAsString("Description");
+			String comments = p_modelRecord.get_ValueAsString("Help");
 			if(comments.isEmpty())
 				comments = "--";
 			calendar.setName(name); 
 			calendar.setDescription(description);
-			calendar.setComments(comments);
+			//calendar.setComments(comments);
+			calendar.set_ValueOfColumn("Help", comments);
 			if(p_modelRecord.get_Value("DateStartSchedule")!=null && p_modelRecord.get_Value("Qty")!=null) {
 				Timestamp date = (Timestamp) p_modelRecord.get_Value("DateStartSchedule");
 				BigDecimal qty = (BigDecimal) p_modelRecord.get_Value("Qty");

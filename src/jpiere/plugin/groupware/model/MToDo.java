@@ -602,6 +602,7 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 		
 		resAssignment.setName(getName());
 		resAssignment.setDescription(getDescription());
+		resAssignment.set_ValueOfColumn("Help", getComments());
 		int resourceID = DB.getSQLValue(null, "SELECT S_Resource_ID FROM S_Resource WHERE isActive='Y' AND AD_Client_ID=? AND AD_User_ID=?", getAD_Client_ID(),getAD_User_ID());
 		resAssignment.setS_Resource_ID(resourceID);
 		
