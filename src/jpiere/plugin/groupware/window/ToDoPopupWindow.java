@@ -3719,13 +3719,13 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			//////
 			
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue("S");
-			String name = p_modelRecord.get_ValueAsString("Help");
+			String name = p_modelRecord.get_ValueAsString("Name");
 			if(name.isEmpty())
 				name = "--";
-			String description = p_modelRecord.get_ValueAsString("Name");
+			String description = p_modelRecord.get_ValueAsString("Description");
 			if(description.isEmpty())
 				description = "--";
-			String comments = p_modelRecord.get_ValueAsString("Description");
+			String comments = p_modelRecord.get_ValueAsString("Help");
 			if(comments.isEmpty())
 				comments = "--";
 			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(name);
