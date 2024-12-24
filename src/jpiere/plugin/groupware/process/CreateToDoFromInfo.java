@@ -119,23 +119,43 @@ public class CreateToDoFromInfo extends SvrProcess {
 			calendar.saveEx();
 		}
 		else {
-
+			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
+			boolean isLinked = false;
+			
 			PO p_modelRecord = (MTable.get(getCtx(), tableName)).getPO(recordID, null);
 			
-			if(p_modelRecord.get_ValueAsInt("S_Resource_ID")>0) 
+			if(p_modelRecord.get_ValueAsInt("S_Resource_ID")>0) { 
 				calendar.setAD_User_ID(MResource.get(Env.getCtx(), p_modelRecord.get_ValueAsInt("S_Resource_ID")).getAD_User_ID());
-			if(p_modelRecord.get_ValueAsInt("C_Project_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("C_Project_ID")>0) {  //se presente....
 				calendar.setC_Project_ID(p_modelRecord.get_ValueAsInt("C_Project_ID"));
-			if(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID")>0) {  //se presente....
 				calendar.setC_ContactActivity_ID(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID"));
-			if(p_modelRecord.get_ValueAsInt("R_Request_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("R_Request_ID")>0) {  //se presente....
 				calendar.setR_Request_ID(p_modelRecord.get_ValueAsInt("R_Request_ID"));
-			if(p_modelRecord.get_ValueAsInt("MP_Maintain_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("MP_Maintain_ID")>0) {  //se presente....
 				calendar.set_ValueOfColumn("MP_Maintain_ID", p_modelRecord.get_ValueAsInt("MP_Maintain_ID"));
-			if(p_modelRecord.get_ValueAsInt("MP_OT_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("MP_OT_ID")>0) {  //se presente....
 				calendar.set_ValueOfColumn("MP_OT_ID", p_modelRecord.get_ValueAsInt("MP_OT_ID"));
+				isLinked = true;
+			}
 			if(p_modelRecord.get_ValueAsInt("C_BPartner_ID")>0)
 				calendar.setC_BPartner_ID(p_modelRecord.get_ValueAsInt("C_BPartner_ID"));
+			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
+			if(!isLinked) {
+				calendar.setAD_Table_ID(p_modelRecord.get_Table_ID());
+				calendar.setRecord_ID(recordID);
+			}
+			//iDempiereConsulting __24/12/2024 -------END
 			calendar.setJP_ToDo_Type(MToDo.JP_TODO_TYPE_Schedule);
 			String name = p_modelRecord.get_ValueAsString("Help");
 			if(name.isEmpty())
