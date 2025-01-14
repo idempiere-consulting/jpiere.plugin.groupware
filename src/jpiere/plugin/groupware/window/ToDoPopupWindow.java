@@ -265,6 +265,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 	//iDempiereConsulting __14/12/2023 --- Invia evento calendario
 	private final static String CALENDAR_ICS = "Invia_ics";
 	private final static String USER_FILTER = "User_Filter";
+	
+	private JsonObject tmp_TableRecord = null;
 	/**
 	 * Constructor
 	 */
@@ -2652,6 +2654,17 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 		}
 
+		//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
+		if(tmp_TableRecord != null) {
+			String tableName = tmp_TableRecord.get("TableName").getAsString();
+			int tableID = MTable.getTable_ID(tableName);
+			int recordID = tmp_TableRecord.get("RecordID").getAsInt();
+			p_iToDo.setValue("AD_Table_ID", tableID);
+			p_iToDo.setValue("Record_ID", recordID);
+			tmp_TableRecord = null;
+		}
+		//iDempiereConsulting __24/12/2024 -------END
+		
 		//Check BeforeSave()
 		String msg = p_iToDo.beforeSavePreCheck(true);
 		if(!Util.isEmpty(msg))
@@ -3652,30 +3665,51 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 		}
 		else {
+			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
+			boolean isLinked = false;
 			PO p_modelRecord = (MTable.get(ctx, tableName)).getPO(recordID, null);
 			
-			if(p_modelRecord.get_ValueAsInt("S_Resource_ID")>0) 
+			if(p_modelRecord.get_ValueAsInt("S_Resource_ID")>0) { 
 				map_Editor.get(MToDo.COLUMNNAME_AD_User_ID).setValue(MResource.get(Env.getCtx(), p_modelRecord.get_ValueAsInt("S_Resource_ID")).getAD_User_ID());
-			if(p_modelRecord.get_ValueAsInt("C_Project_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("C_Project_ID")>0) {  //se presente....
 				map_Editor.get(MToDo.COLUMNNAME_C_Project_ID).setValue(p_modelRecord.get_ValueAsInt("C_Project_ID"));
-			if(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID")>0) {  //se presente....
 				map_Editor.get(MToDo.COLUMNNAME_C_ContactActivity_ID).setValue(p_modelRecord.get_ValueAsInt("C_ContactActivity_ID"));
-			if(p_modelRecord.get_ValueAsInt("R_Request_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("R_Request_ID")>0) {  //se presente....
 				map_Editor.get(MToDo.COLUMNNAME_R_Request_ID).setValue(p_modelRecord.get_ValueAsInt("R_Request_ID"));
-			if(p_modelRecord.get_ValueAsInt("MP_Maintain_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("MP_Maintain_ID")>0) {  //se presente....
 				map_Editor.get("MP_Maintain_ID").setValue(p_modelRecord.get_ValueAsInt("MP_Maintain_ID"));
-			if(p_modelRecord.get_ValueAsInt("MP_OT_ID")>0)  //se presente....
+				isLinked = true;
+			}
+			if(p_modelRecord.get_ValueAsInt("MP_OT_ID")>0) {  //se presente....
 				map_Editor.get("MP_OT_ID").setValue(p_modelRecord.get_ValueAsInt("MP_OT_ID"));
+				isLinked = true;
+			}
 			if(p_modelRecord.get_ValueAsInt("C_BPartner_ID")>0)
 				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_modelRecord.get_ValueAsInt("C_BPartner_ID"));
+			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
+			if(!isLinked && valueParse != null) {
+				//passo il valore su variabile, che verrà cancellato al momento del salvataggio del record
+				tmp_TableRecord = valueParse;
+			}
+			//////
+			
 			map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_Type).setValue("S");
-			String name = p_modelRecord.get_ValueAsString("Help");
+			String name = p_modelRecord.get_ValueAsString("Name");
 			if(name.isEmpty())
 				name = "--";
-			String description = p_modelRecord.get_ValueAsString("Name");
+			String description = p_modelRecord.get_ValueAsString("Description");
 			if(description.isEmpty())
 				description = "--";
-			String comments = p_modelRecord.get_ValueAsString("Description");
+			String comments = p_modelRecord.get_ValueAsString("Help");
 			if(comments.isEmpty())
 				comments = "--";
 			map_Editor.get(MToDo.COLUMNNAME_Name).setValue(name);
