@@ -119,7 +119,8 @@ public class GroupwareToDoUtil {
 		label.setMandatory(editor==null? false : editor.isMandatory());//TODO
 
 		if(editor != null && (editor.getColumnName().equals(MToDo.COLUMNNAME_AD_User_ID)
-				|| editor.getColumnName().equals(MToDo.COLUMNNAME_JP_ToDo_Category_ID) || editor.getColumnName().equals(MTeam.COLUMNNAME_JP_Team_ID) ))
+				|| editor.getColumnName().equals(MToDo.COLUMNNAME_JP_ToDo_Category_ID) || editor.getColumnName().equals(MTeam.COLUMNNAME_JP_Team_ID) 
+				|| editor.getColumnName().equals("C_BPartner_ID") || editor.getColumnName().equals("C_Project_ID") )) //iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
 		{
 			label.setStyle(STYLE_ZOOMABLE_LABEL);
 		}

@@ -57,9 +57,11 @@ import org.adempiere.webui.theme.ThemeManager;
 import org.adempiere.webui.util.ZKUpdateUtil;
 import org.adempiere.webui.window.Dialog;
 import org.compiere.model.I_C_NonBusinessDay;
+import org.compiere.model.MBPartner;
 import org.compiere.model.MColumn;
 import org.compiere.model.MLookup;
 import org.compiere.model.MLookupFactory;
+import org.compiere.model.MProject;
 import org.compiere.model.MRefList;
 import org.compiere.model.MRole;
 import org.compiere.model.MSysConfig;
@@ -164,6 +166,11 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 	private String p_JP_ToDo_Calendar = MGroupwareUser.JP_TODO_CALENDAR_PersonalToDo;
 
 	private String p_CalendarMold = null;
+	
+	//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+	private int p_C_BPartner_ID = 0;
+	private int p_C_Project_ID = 0;
+	//iDempiereConsulting __25/02/2025 -------END
 
 	private MGroupwareUser m_GroupwareUser = null;
 	private MRole m_Role = MRole.getDefault();
@@ -176,6 +183,10 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 	private WYesNoEditor  editor_IsDisplaySchedule ;
 	private WYesNoEditor  editor_IsDisplayTask ;
 	private WTableDirEditor editor_JP_ToDo_Calendar ;
+	//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+	private WSearchEditor editor_C_BPartner_ID ;
+	private WSearchEditor editor_C_Project_ID ;
+	//iDempiereConsulting __25/02/2025 ------END
 
 	private MLookup lookup_JP_ToDo_Category_ID;
 	private MLookup lookup_JP_ToDo_Calendar;
@@ -234,7 +245,11 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 	private Label label_JP_ToDo_Main_Calendar;
 	private Label label_JP_ToDo_Calendar;
 	private Label label_JP_ToDo_Calendar_For_Custom;
-
+	
+	//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+	private Label label_C_BPartner_ID;
+	private Label label_C_Project_ID;
+	//iDempiereConsulting __25/02/2025 -------END
 
 	/** Interface **/
 	private List<I_ToDo> list_ToDoes = null;
@@ -544,7 +559,38 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 		row.appendChild(editor_JP_Team_ID.getComponent());
 		editor_JP_Team_ID.showMenu();
 
+		//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+		//Business Partner Search
+		MLookup lookupBP = MLookupFactory.get(ctx, 0,  0, MColumn.getColumn_ID(MBPartner.Table_Name, MBPartner.COLUMNNAME_C_BPartner_ID),  DisplayType.Search);
+		editor_C_BPartner_ID = new WSearchEditor( MBPartner.COLUMNNAME_C_BPartner_ID, false, false, true, lookupBP);
+		editor_C_BPartner_ID.setValue(null);
+		editor_C_BPartner_ID.addValueChangeListener(this);
+		ZKUpdateUtil.setVflex(editor_C_BPartner_ID.getComponent(), "true");
+		ZKUpdateUtil.setHflex(editor_C_BPartner_ID.getComponent(), "true");
 
+		label_C_BPartner_ID = new Label(Msg.getElement(ctx, MBPartner.COLUMNNAME_C_BPartner_ID));
+		label_C_BPartner_ID.addEventListener(Events.ON_CLICK, this);
+
+		row.appendChild(GroupwareToDoUtil.createLabelDiv(editor_C_BPartner_ID, label_C_BPartner_ID, true));
+		row.appendChild(editor_C_BPartner_ID.getComponent());
+		editor_C_BPartner_ID.showMenu();
+		
+		//Project Search
+		MLookup lookupPrj = MLookupFactory.get(ctx, 0,  0, MColumn.getColumn_ID(MProject.Table_Name, MProject.COLUMNNAME_C_Project_ID),  DisplayType.Search);
+		editor_C_Project_ID = new WSearchEditor( MProject.COLUMNNAME_C_Project_ID, false, false, true, lookupPrj);
+		editor_C_Project_ID.setValue(null);
+		editor_C_Project_ID.addValueChangeListener(this);
+		ZKUpdateUtil.setVflex(editor_C_Project_ID.getComponent(), "true");
+		ZKUpdateUtil.setHflex(editor_C_Project_ID.getComponent(), "true");
+
+		label_C_Project_ID = new Label(Msg.getElement(ctx, MProject.COLUMNNAME_C_Project_ID));
+		label_C_Project_ID.addEventListener(Events.ON_CLICK, this);
+
+		row.appendChild(GroupwareToDoUtil.createLabelDiv(editor_C_Project_ID, label_C_Project_ID, true));
+		row.appendChild(editor_C_Project_ID.getComponent());
+		editor_C_Project_ID.showMenu();
+		//iDempiereConsulting __25/02/2025 -----------END
+		
 		row.appendChild(GroupwareToDoUtil.getDividingLine());
 		row.appendChild(GroupwareToDoUtil.createSpaceDiv());
 
@@ -1558,6 +1604,24 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 
 			}
 		}
+		//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+		else if(MToDo.COLUMNNAME_C_BPartner_ID.equals(name)) {
+			if(value == null)
+				p_C_BPartner_ID = 0;
+			else
+				p_C_BPartner_ID = Integer.parseInt(value.toString());
+			
+			resetSelectedTabCalendarModel();
+		}
+		else if(MToDo.COLUMNNAME_C_Project_ID.equals(name)) {
+			if(value == null)
+				p_C_Project_ID = 0;
+			else
+				p_C_Project_ID = Integer.parseInt(value.toString());
+			
+			resetSelectedTabCalendarModel();
+		}
+		//iDempiereConsulting __25/02/2025 --------END
 
 	}
 
@@ -1774,6 +1838,22 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 						AEnv.zoom(MTable.getTable_ID(MToDoCategory.Table_Name), Integer.valueOf(value.toString()));
 					}
 				}
+				//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+				else if(label_C_BPartner_ID.equals(comp)) {
+					Object value = editor_C_BPartner_ID.getValue();
+					if(value == null || Util.isEmpty(value.toString()))
+						AEnv.zoom(MTable.getTable_ID("C_BPartner"), 0);
+					else 
+						AEnv.zoom(MTable.getTable_ID("C_BPartner"), Integer.valueOf(value.toString()));
+				}
+				else if(label_C_Project_ID.equals(comp)) {
+					Object value = editor_C_Project_ID.getValue();
+					if(value == null || Util.isEmpty(value.toString()))
+						AEnv.zoom(MTable.getTable_ID("C_Project"), 0);
+					else
+						AEnv.zoom(MTable.getTable_ID("C_Project"), Integer.valueOf(value.toString()));
+				}
+				//iDempiereConsulting __25/02/2025 --------END
 
 			}else if(comp instanceof Tab) {
 
@@ -2890,6 +2970,17 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 			}
 
 		}
+		
+		//iDempiereConsulting __25/02/2025 --- Filtro per Business Partner e Progetto
+		if(p_C_BPartner_ID > 0) {
+			if(event.getToDo().getC_BPartner_ID() != p_C_BPartner_ID)
+				return true;
+		}
+		if(p_C_Project_ID > 0) {
+			if(event.getToDo().getC_Project_ID() != p_C_Project_ID)
+				return true;
+		}
+		//iDempiereConsulting __25/02/2025 ------END
 
 		if(isDisplayedCalendarsRange(event))
 			return false;
