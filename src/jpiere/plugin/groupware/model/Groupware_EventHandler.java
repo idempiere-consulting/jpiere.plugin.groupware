@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.adempiere.base.event.AbstractEventHandler;
 import org.adempiere.base.event.IEventTopics;
+import org.adempiere.exceptions.AdempiereException;
 import org.compiere.model.MOrder;
 import org.compiere.model.MRequest;
 import org.compiere.model.MRequestType;
@@ -90,10 +91,15 @@ public class Groupware_EventHandler extends AbstractEventHandler {
 					jpTodo.setJP_ToDo_ScheduledStartTime(request.getDateNextAction());
 					BigDecimal qty = request.getQtyPlan();
 					calcQty_EndTime(qty, jpTodo);
-					
-					byPass = true;
-					jpTodo.saveEx();
-					byPass = false;
+					try {
+						byPass = true;
+						jpTodo.saveEx();
+						byPass = false;
+					}
+					catch (Exception e) {
+						byPass = false;
+						throw new AdempiereException(e);
+					}
 				}
 				else {
 					Trx trx = Trx.get(request.get_TrxName(), false);
@@ -187,9 +193,14 @@ public class Groupware_EventHandler extends AbstractEventHandler {
 					personalTODO.setSequence(seq);
 					if(personalTODO.getSource_UUID()==null || personalTODO.getSource_UUID().isEmpty())
 						personalTODO.setSource_UUID(uid);
-					byPass_ics = true;
-					personalTODO.saveEx();
-					byPass_ics = false;
+					try {
+						byPass_ics = true;
+						personalTODO.saveEx();
+						byPass_ics = false;
+					} catch (Exception e) {
+						byPass_ics = false;
+						throw new AdempiereException(e);
+					}
 					//DB.executeUpdateEx("UPDATE JP_ToDo SET Description=?, Sequence=? WHERE AD_Client_ID=? AND JP_ToDo_ID=?", new Object[] {description, seq, personalTODO.getAD_Client_ID(), personalTODO.getJP_ToDo_ID()}, null);
 					//DB.executeUpdateEx("UPDATE JP_ToDo SET Source_UUID=? WHERE AD_Client_ID=? AND JP_ToDo_ID=? AND Source_UUID IS NULL", new Object[] {uid, personalTODO.getAD_Client_ID(), personalTODO.getJP_ToDo_ID()}, null);
 				}
