@@ -3897,6 +3897,9 @@ public class ToDoCalendar implements I_ToDoPopupwindowCaller, I_ToDoCalendarEven
 		else {
 			jsonObj = valueParse;
 		}
+		//iDempiereConsulting __28/03/2025 --- Se viene lanciato il processo di 'Crea Calendario da Record Selezionato [CCRS00]_CreateToDoFromInfo', passo l'aduserID per l'utente calendario
+		if(valueParse!=null && valueParse.get("UserCalendar")!=null)
+			editor_AD_User_ID.valueChange(new ValueChangeEvent(editor_AD_User_ID, "Change", null, valueParse.get("UserCalendar").getAsInt()));
 	}
 
 }
