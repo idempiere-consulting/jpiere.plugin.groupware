@@ -3725,7 +3725,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			if(p_modelRecord.get_ValueAsInt("C_BPartner_ID")>0)
 				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_modelRecord.get_ValueAsInt("C_BPartner_ID"));
 			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
-			if(!isLinked && valueParse != null) {
+			if(valueParse != null) {
 				//passo il valore su variabile, che verrà cancellato al momento del salvataggio del record
 				tmp_TableRecord = valueParse;
 			}
