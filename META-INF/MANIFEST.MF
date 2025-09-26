@@ -25,4 +25,5 @@ Bundle-ClassPath: .,
  lib/javax.mail.jar
 Import-Package: it.idIta.idempiere.LIT_I_Service.model;resolution:=optional,
  org.osgi.service.event
-Export-Package: jpiere.plugin.groupware.model
+Export-Package: jpiere.plugin.groupware.form,
+ jpiere.plugin.groupware.model

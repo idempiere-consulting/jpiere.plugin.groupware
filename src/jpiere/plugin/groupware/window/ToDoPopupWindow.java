@@ -3447,7 +3447,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
 				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cTask.getDescription());
-			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cTask.get_ValueAsInt("C_BPartner_ID"));
+			if(cTask.get_ValueAsInt("C_BPartner_ID") > 0)
+				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cTask.get_ValueAsInt("C_BPartner_ID"));
 			
 		}
 		else if(MToDo.COLUMNNAME_C_Project_ID.equals(name)) {
@@ -3465,7 +3466,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
 				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(cProject.getDescription());
-			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cProject.get_ValueAsInt("C_BPartner_ID"));
+			if(cProject.get_ValueAsInt("C_BPartner_ID") > 0)
+				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(cProject.get_ValueAsInt("C_BPartner_ID"));
 			
 		}
 		else if("MP_Maintain_ID".equals(name)) {
@@ -3483,7 +3485,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
 				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(mpMaintain.getDescription());
-			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(mpMaintain.get_ValueAsInt("C_BPartner_ID"));
+			if(mpMaintain.get_ValueAsInt("C_BPartner_ID") > 0)
+				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(mpMaintain.get_ValueAsInt("C_BPartner_ID"));
 			
 		}
 		else if("MP_OT_ID".equals(name)) {
@@ -3501,7 +3504,8 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
 				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(mpOT.getDescription());
-			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(mpOT.get_ValueAsInt("C_BPartner_ID"));
+			if(mpOT.get_ValueAsInt("C_BPartner_ID") > 0)
+				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(mpOT.get_ValueAsInt("C_BPartner_ID"));
 			
 		}
 		else if(MToDo.COLUMNNAME_R_Request_ID.equals(name)) {
@@ -3519,7 +3523,10 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			}
 			if(map_Editor.get(MToDo.COLUMNNAME_Description).getValue()==null || ((String)map_Editor.get(MToDo.COLUMNNAME_Description).getValue()).isEmpty())
 				map_Editor.get(MToDo.COLUMNNAME_Description).setValue(rRequest.getSummary());
-			map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(rRequest.get_ValueAsInt("C_BPartner_ID"));
+			if(rRequest.get_ValueAsInt("C_BPartner_ID") > 0)
+				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(rRequest.get_ValueAsInt("C_BPartner_ID"));
+			if(rRequest.getQtyPlan()!=null && rRequest.getQtyPlan().compareTo(BigDecimal.ZERO) > 0)
+				((WNumberEditor)map_Editor.get(MToDo.COLUMNNAME_Qty)).setValue(rRequest.getQtyPlan());
 			
 		}
 		//iDempiereConsulting __26/10/2021 -------END
@@ -3649,6 +3656,12 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 				p_c_project_ID = projectID;
 				((WSearchEditor)map_Editor.get(MToDo.COLUMNNAME_C_Project_ID)).valueChange(new ValueChangeEvent(map_Editor.get(MToDo.COLUMNNAME_C_Project_ID), "Change", null, projectID));
 			}
+			BigDecimal qty =  (BigDecimal)map_Editor.get(MToDo.COLUMNNAME_Qty).getValue();
+			if(qty != null && qty.compareTo(BigDecimal.ZERO) > 0) {
+				LocalDateTime start = ((Timestamp)((WTimeEditor)map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledStartTime)).getValue()).toLocalDateTime();
+				LocalDateTime end = start.plusHours(qty.longValue());
+				map_Editor.get(MToDo.COLUMNNAME_JP_ToDo_ScheduledEndTime).setValue(Timestamp.valueOf(end));
+			}
 		}
 	}
 	
@@ -3696,7 +3709,7 @@ public class ToDoPopupWindow extends Window implements EventListener<Event>,Valu
 			if(p_modelRecord.get_ValueAsInt("C_BPartner_ID")>0)
 				map_Editor.get(MToDo.COLUMNNAME_C_BPartner_ID).setValue(p_modelRecord.get_ValueAsInt("C_BPartner_ID"));
 			//iDempiereConsulting __24/12/2024 --- Eventuale associazione della Tabella e Documento di Origine diverse da quelle principali
-			if(!isLinked && valueParse != null) {
+			if(valueParse != null) {
 				//passo il valore su variabile, che verrà cancellato al momento del salvataggio del record
 				tmp_TableRecord = valueParse;
 			}
