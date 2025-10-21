@@ -621,6 +621,20 @@ public class MToDo extends X_JP_ToDo implements I_ToDo {
 			resAssignment.set_ValueOfColumn("MP_Maintain_ID", get_ValueAsInt("MP_Maintain_ID"));
 		if(get_ValueAsInt("MP_OT_ID")>0)
 			resAssignment.set_ValueOfColumn("MP_OT_ID", get_ValueAsInt("MP_OT_ID"));
+		
+		//iDempiereConsulting __21/10/2025 --- Gestione S_Resource di Produzione + Attività Risorsa ereditati dal Calendario
+		if(get_ValueAsInt("S_Resource_ID")>0)
+			//setto la risorsa di produzione 
+			resAssignment.set_ValueOfColumn("S_ResourceParent_ID", get_ValueAsInt("S_Resource_ID"));
+		if(get_ValueAsInt("lit_resourceactivity_ID")>0)
+			//setto l'attività della risorsa di produzione
+			resAssignment.set_ValueOfColumn("lit_resourceactivity_ID", get_ValueAsInt("lit_resourceactivity_ID"));
+		if(get_ValueAsInt("A_Asset_ID")>0)
+			resAssignment.set_ValueOfColumn("A_Asset_ID", get_ValueAsInt("A_Asset_ID"));
+		if(get_ValueAsInt("M_Production_ID")>0)
+			resAssignment.set_ValueOfColumn("M_Production_ID", get_ValueAsInt("M_Production_ID"));	
+		//iDempiereConsulting __21/10/2025 --- END
+		
 		resAssignment.saveEx();
 		
 	}
