@@ -30,16 +30,16 @@ import org.compiere.util.Env;
 import org.compiere.util.KeyNamePair;
 
 /** Generated Model for JP_ToDo
- *  @author iDempiere (generated) 
- *  @version Release 10 - $Id$ */
+ *  @author iDempiere (generated)
+ *  @version Release 12 - $Id$ */
 @org.adempiere.base.Model(table="JP_ToDo")
-public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent 
+public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 20231218L;
+	private static final long serialVersionUID = 20251129L;
 
     /** Standard Constructor */
     public X_JP_ToDo (Properties ctx, int JP_ToDo_ID, String trxName)
@@ -67,6 +67,78 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
         } */
     }
 
+    /** Standard Constructor */
+    public X_JP_ToDo (Properties ctx, int JP_ToDo_ID, String trxName, String ... virtualColumns)
+    {
+      super (ctx, JP_ToDo_ID, trxName, virtualColumns);
+      /** if (JP_ToDo_ID == 0)
+        {
+			setAD_User_ID (0);
+			setIsEndDateAllDayJP (false);
+// N
+			setIsOpenToDoJP (true);
+// Y
+			setIsStartDateAllDayJP (false);
+// N
+			setJP_Processing1 (null);
+// N
+			setJP_ToDo_ID (0);
+			setJP_ToDo_Status (null);
+// NY
+			setJP_ToDo_Type (null);
+// T
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_JP_ToDo (Properties ctx, String JP_ToDo_UU, String trxName)
+    {
+      super (ctx, JP_ToDo_UU, trxName);
+      /** if (JP_ToDo_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsEndDateAllDayJP (false);
+// N
+			setIsOpenToDoJP (true);
+// Y
+			setIsStartDateAllDayJP (false);
+// N
+			setJP_Processing1 (null);
+// N
+			setJP_ToDo_ID (0);
+			setJP_ToDo_Status (null);
+// NY
+			setJP_ToDo_Type (null);
+// T
+			setName (null);
+        } */
+    }
+
+    /** Standard Constructor */
+    public X_JP_ToDo (Properties ctx, String JP_ToDo_UU, String trxName, String ... virtualColumns)
+    {
+      super (ctx, JP_ToDo_UU, trxName, virtualColumns);
+      /** if (JP_ToDo_UU == null)
+        {
+			setAD_User_ID (0);
+			setIsEndDateAllDayJP (false);
+// N
+			setIsOpenToDoJP (true);
+// Y
+			setIsStartDateAllDayJP (false);
+// N
+			setJP_Processing1 (null);
+// N
+			setJP_ToDo_ID (0);
+			setJP_ToDo_Status (null);
+// NY
+			setJP_ToDo_Type (null);
+// T
+			setName (null);
+        } */
+    }
+
     /** Load Constructor */
     public X_JP_ToDo (Properties ctx, ResultSet rs, String trxName)
     {
@@ -74,7 +146,7 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
     }
 
     /** AccessLevel
-      * @return 7 - System - Client - Org 
+      * @return 7 - System - Client - Org
       */
     protected int get_AccessLevel()
     {
@@ -163,9 +235,9 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public void setAD_User_ID (int AD_User_ID)
 	{
 		if (AD_User_ID < 1)
-			set_Value (COLUMNNAME_AD_User_ID, null);
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, null);
 		else
-			set_Value (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
+			set_ValueNoCheck (COLUMNNAME_AD_User_ID, Integer.valueOf(AD_User_ID));
 	}
 
 	/** Get User/Contact.
@@ -195,6 +267,23 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		else
 			set_Value (COLUMNNAME_C_BPartner_ID, Integer.valueOf(C_BPartner_ID));
 	}
+	
+	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
+			.getPO(getC_ProjectPhase_ID(), get_TrxName());
+	}
+
+	/** Set Project Phase.
+		@param C_ProjectPhase_ID Phase of a Project
+	*/
+	public void setC_ProjectPhase_ID (int C_ProjectPhase_ID)
+	{
+		if (C_ProjectPhase_ID < 1)
+			set_Value (COLUMNNAME_C_ProjectPhase_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ProjectPhase_ID, Integer.valueOf(C_ProjectPhase_ID));
+	}
 
 	/** Get Business Partner.
 		@return Identifies a Business Partner
@@ -202,6 +291,14 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public int getC_BPartner_ID()
 	{
 		Integer ii = (Integer)get_Value(COLUMNNAME_C_BPartner_ID);
+		if (ii == null)
+			 return 0;
+		return ii.intValue();
+	}
+
+	public int getC_ProjectPhase_ID()
+	{
+		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectPhase_ID);
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
@@ -222,6 +319,23 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 			set_Value (COLUMNNAME_C_ContactActivity_ID, null);
 		else
 			set_Value (COLUMNNAME_C_ContactActivity_ID, Integer.valueOf(C_ContactActivity_ID));
+	}
+	
+	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
+	{
+		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
+			.getPO(getC_ProjectTask_ID(), get_TrxName());
+	}
+
+	/** Set Project Task.
+		@param C_ProjectTask_ID Actual Project Task in a Phase
+	*/
+	public void setC_ProjectTask_ID (int C_ProjectTask_ID)
+	{
+		if (C_ProjectTask_ID < 1)
+			set_Value (COLUMNNAME_C_ProjectTask_ID, null);
+		else
+			set_Value (COLUMNNAME_C_ProjectTask_ID, Integer.valueOf(C_ProjectTask_ID));
 	}
 
 	/** Get Contact Activity.
@@ -277,51 +391,6 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 		if (ii == null)
 			 return 0;
 		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ProjectPhase getC_ProjectPhase() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ProjectPhase)MTable.get(getCtx(), org.compiere.model.I_C_ProjectPhase.Table_ID)
-			.getPO(getC_ProjectPhase_ID(), get_TrxName());
-	}
-
-	/** Set Project Phase.
-		@param C_ProjectPhase_ID Phase of a Project
-	*/
-	public void setC_ProjectPhase_ID (int C_ProjectPhase_ID)
-	{
-		if (C_ProjectPhase_ID < 1)
-			set_Value (COLUMNNAME_C_ProjectPhase_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ProjectPhase_ID, Integer.valueOf(C_ProjectPhase_ID));
-	}
-
-	/** Get Project Phase.
-		@return Phase of a Project
-	  */
-	public int getC_ProjectPhase_ID()
-	{
-		Integer ii = (Integer)get_Value(COLUMNNAME_C_ProjectPhase_ID);
-		if (ii == null)
-			 return 0;
-		return ii.intValue();
-	}
-
-	public org.compiere.model.I_C_ProjectTask getC_ProjectTask() throws RuntimeException
-	{
-		return (org.compiere.model.I_C_ProjectTask)MTable.get(getCtx(), org.compiere.model.I_C_ProjectTask.Table_ID)
-			.getPO(getC_ProjectTask_ID(), get_TrxName());
-	}
-
-	/** Set Project Task.
-		@param C_ProjectTask_ID Actual Project Task in a Phase
-	*/
-	public void setC_ProjectTask_ID (int C_ProjectTask_ID)
-	{
-		if (C_ProjectTask_ID < 1)
-			set_Value (COLUMNNAME_C_ProjectTask_ID, null);
-		else
-			set_Value (COLUMNNAME_C_ProjectTask_ID, Integer.valueOf(C_ProjectTask_ID));
 	}
 
 	/** Get Project Task.
@@ -409,17 +478,17 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public boolean isEndDateAllDayJP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsEndDateAllDayJP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
 	}
 
-	/** Set Open ToDo.
-		@param IsOpenToDoJP Open ToDo
+	/** Set Public ToDo.
+		@param IsOpenToDoJP Public ToDo
 	*/
 	public void setIsOpenToDoJP (boolean IsOpenToDoJP)
 	{
@@ -431,10 +500,10 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public boolean isOpenToDoJP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsOpenToDoJP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -453,10 +522,10 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public boolean isStartDateAllDayJP()
 	{
 		Object oo = get_Value(COLUMNNAME_IsStartDateAllDayJP);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
@@ -828,7 +897,7 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
     /** Get Record ID/ColumnName
         @return ID/ColumnName pair
       */
-    public KeyNamePair getKeyNamePair() 
+    public KeyNamePair getKeyNamePair()
     {
         return new KeyNamePair(get_ID(), getName());
     }
@@ -895,10 +964,10 @@ public class X_JP_ToDo extends PO implements I_JP_ToDo, I_Persistent
 	public boolean isProcessed()
 	{
 		Object oo = get_Value(COLUMNNAME_Processed);
-		if (oo != null) 
+		if (oo != null)
 		{
-			 if (oo instanceof Boolean) 
-				 return ((Boolean)oo).booleanValue(); 
+			 if (oo instanceof Boolean)
+				 return ((Boolean)oo).booleanValue();
 			return "Y".equals(oo);
 		}
 		return false;
