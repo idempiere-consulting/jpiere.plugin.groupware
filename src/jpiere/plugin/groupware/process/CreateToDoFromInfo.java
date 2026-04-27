@@ -111,6 +111,8 @@ public class CreateToDoFromInfo extends SvrProcess {
 			calendar.setName(str_name);
 			calendar.setDescription(rRequest.getSummary());
 			calendar.setC_BPartner_ID(rRequest.get_ValueAsInt("C_BPartner_ID"));
+			if(rRequest.get_ValueAsInt("C_Project_ID") > 0)
+				calendar.setC_Project_ID(rRequest.get_ValueAsInt("C_Project_ID"));
 			Timestamp date = rRequest.getStartDate();
 			if(date==null)
 				date = Timestamp.valueOf((new Timestamp(System.currentTimeMillis()).toLocalDateTime()).plusDays(1));

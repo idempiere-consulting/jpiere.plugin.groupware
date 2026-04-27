@@ -114,6 +114,8 @@ public class Groupware_EventHandler extends AbstractEventHandler {
 					jpTodo.setAD_Table_ID(MRequest.Table_ID);
 					jpTodo.setRecord_ID(request.getR_Request_ID());
 					jpTodo.setR_Request_ID(request.getR_Request_ID());
+					if(request.getC_Project_ID()>0)
+						jpTodo.setC_Project_ID(request.getC_Project_ID());
 					jpTodo.setJP_ToDo_Type(MToDo.JP_TODO_TYPE_Schedule);
 					jpTodo.setJP_ToDo_Status(MToDo.JP_TODO_STATUS_NotYetStarted);
 					jpTodo.setName(request.getDocumentNo()+"   "+((MRequestType)request.getR_RequestType()).getName());
